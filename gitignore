@@ -1,5 +1,14 @@
 .gradle
 .idea
-build
+build/
 gradle
 gradlew
+*/build/
+*.war
+*/tmp/
+*/war/
+build.gradle
+*build.gradle
+gradle.*
+gradlew.*
+setting.gradle
