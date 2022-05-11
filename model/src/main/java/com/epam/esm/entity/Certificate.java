@@ -11,12 +11,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString(exclude = {"tags"})
+@EqualsAndHashCode(of = "certificateName")
+@ToString(exclude = "tags")
 @Builder
 @Entity
 @Table(name = "gift_certificate")
-public class Certificate extends BaseEntity {
+public class Certificate extends BaseEntity <Long>{
 
     private String certificateName;
     private String description;

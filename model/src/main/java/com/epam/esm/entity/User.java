@@ -2,9 +2,8 @@ package com.epam.esm.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,8 +13,14 @@ import javax.persistence.UniqueConstraint;
 @ToString
 @Entity
 @Table
-public class User extends BaseEntity{
+public class User extends BaseEntity <Long>{
 
+    @Column(nullable = false, unique = true)
     private String nickName;
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Order> orders;
 }

@@ -4,7 +4,6 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.repositorys.EntityDao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +12,12 @@ import java.util.List;
 @Repository
 public class CertificateDao implements EntityDao<Certificate> {
 
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public CertificateDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<Certificate> getAll() {
@@ -28,7 +31,7 @@ public class CertificateDao implements EntityDao<Certificate> {
     public void save(Certificate certificate) {
 
         Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(certificate);
+        session.evict(certificate);
 
     }
 
@@ -43,10 +46,11 @@ public class CertificateDao implements EntityDao<Certificate> {
     public void delete(long id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("delete from Certificate " +
-                "where id =:certificateId ");
-        query.setParameter("certificateId", id);
-        query.executeUpdate();
+        session.detach(session.get(Certificate.class, id));
+//        Query query = session.createQuery("delete from Certificate " +
+//                "where id =:certificateId ");
+//        query.setParameter("certificateId", id);
+//        query.executeUpdate();
 
 
     }

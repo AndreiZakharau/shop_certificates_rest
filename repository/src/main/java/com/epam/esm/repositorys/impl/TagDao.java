@@ -4,15 +4,18 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.repositorys.EntityDao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class TagDao implements EntityDao<Tag> {
 
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public TagDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<Tag> getAll() {
@@ -25,7 +28,7 @@ public class TagDao implements EntityDao<Tag> {
     public void save(Tag tag) {
 
         Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(tag);
+        session.evict(tag);
     }
 
     @Override
@@ -37,10 +40,11 @@ public class TagDao implements EntityDao<Tag> {
     @Override
     public void delete(long id) {
         Session session = sessionFactory.getCurrentSession();
-        Query tagQuery = session.createQuery("delete from Tag " +
-                "where id =:tagId");
-        tagQuery.setParameter("tagId", id);
-        tagQuery.executeUpdate();
+        session.detach(session.get(Tag.class,id));
+//        Query tagQuery = session.createQuery("delete from Tag " +
+//                "where id =:tagId");
+//        tagQuery.setParameter("tagId", id);
+//        tagQuery.executeUpdate();
     }
 
 }
