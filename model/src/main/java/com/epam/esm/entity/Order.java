@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Table
 public class Order extends BaseEntity{
 
+    private User user;
     private String nameCertificate;
     private double priceCertificate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

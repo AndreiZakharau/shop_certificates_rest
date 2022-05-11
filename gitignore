@@ -12,3 +12,6 @@ build.gradle
 gradle.*
 gradlew.*
 setting.gradle
+META-INF
+*/META-INF
+lib

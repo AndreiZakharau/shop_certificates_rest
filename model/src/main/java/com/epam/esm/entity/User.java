@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +16,6 @@ import javax.persistence.Table;
 @Table
 public class User extends BaseEntity{
 
-    private String firstname;
-    private String lastname;
+    private String nickName;
+    private String email;
 }

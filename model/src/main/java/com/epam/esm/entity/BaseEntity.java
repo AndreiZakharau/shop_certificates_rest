@@ -1,9 +1,6 @@
 package com.epam.esm.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @MappedSuperclass
 public abstract class BaseEntity {
 
