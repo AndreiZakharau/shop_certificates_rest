@@ -8,6 +8,8 @@ public interface EntityService<T>{
 
     public void saveEntity(T t);
 
+    public void updateEntity(long id, T t);
+
     public T getEntity(long id);
 
     public void deleteEntity(long id);

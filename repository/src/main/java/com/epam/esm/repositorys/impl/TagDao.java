@@ -3,48 +3,56 @@
 //import com.epam.esm.entity.Tag;
 //import com.epam.esm.repositorys.EntityDao;
 //import org.hibernate.Session;
-//import org.hibernate.SessionFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Repository;
 //
+//import javax.persistence.EntityManager;
 //import java.util.List;
 //
+//@Repository
 //public class TagDao implements EntityDao<Tag> {
 //
-//    private final SessionFactory sessionFactory;
+//    private final EntityManager manager;
 //
 //    @Autowired
-//    public TagDao(SessionFactory sessionFactory) {
-//        this.sessionFactory = sessionFactory;
+//    public TagDao(EntityManager manager) {
+//        this.manager = manager;
 //    }
 //
 //    @Override
-//    public List<Tag> getAll() {
-//        Session session = sessionFactory.getCurrentSession();
+//    public List<Tag> getAllEntity() {
+//        Session session = manager.unwrap(Session.class);
 //        return session.createQuery("from Tag",
 //                Tag.class).getResultList();
 //    }
 //
 //    @Override
-//    public void save(Tag tag) {
+//    public void addEntity(Tag tag) {
 //
-//        Session session = sessionFactory.getCurrentSession();
+//        Session session = manager.unwrap(Session.class);
 //        session.evict(tag);
 //    }
 //
 //    @Override
-//    public Tag get(long id) {
-//        Session session = sessionFactory.getCurrentSession();
+//    public Tag getEntity(long id) {
+//        Session session = manager.unwrap(Session.class);
 //        return session.get(Tag.class,id);
 //    }
 //
 //    @Override
-//    public void delete(long id) {
-//        Session session = sessionFactory.getCurrentSession();
+//    public void deleteEntity(long id) {
+//        Session session = manager.unwrap(Session.class);
 //        session.detach(session.get(Tag.class,id));
-////        Query tagQuery = session.createQuery("delete from Tag " +
-////                "where id =:tagId");
-////        tagQuery.setParameter("tagId", id);
-////        tagQuery.executeUpdate();
+//
 //    }
+//
+//    @Override
+//    public void updateEntity(long id, Tag tag) {
+//        Session session = manager.unwrap(Session.class);
+//
+//
+//    }
+//
+//
 //
 //}

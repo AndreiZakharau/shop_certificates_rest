@@ -4,11 +4,13 @@ import java.util.List;
 
 public interface EntityDao<T> {
 
-    public List<T> getAll();
+    public List<T> getAllEntity();
 
-    public void save(T t);
+    public T getEntity(long id);
 
-    public T get(long id);
+    public void addEntity(T t);
 
-    public void delete(long id);
+    public void updateEntity(long id,T t);
+
+    public void deleteEntity(long id);
 }
