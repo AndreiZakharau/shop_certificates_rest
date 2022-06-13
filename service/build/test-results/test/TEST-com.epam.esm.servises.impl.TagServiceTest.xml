@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.epam.esm.servises.impl.TagServiceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2022-06-13T06:39:21" hostname="LAPTOP-61C39QV4" time="0.078">
+  <properties/>
+  <testcase name="updateEntity()" classname="com.epam.esm.servises.impl.TagServiceTest" time="0.042"/>
+  <testcase name="deleteEntity()" classname="com.epam.esm.servises.impl.TagServiceTest" time="0.015"/>
+  <testcase name="getAllEntity()" classname="com.epam.esm.servises.impl.TagServiceTest" time="0.007"/>
+  <testcase name="getEntity()" classname="com.epam.esm.servises.impl.TagServiceTest" time="0.003"/>
+  <testcase name="saveEntity()" classname="com.epam.esm.servises.impl.TagServiceTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

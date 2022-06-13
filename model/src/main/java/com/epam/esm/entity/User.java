@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,15 +13,18 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table
-public class User extends BaseEntity <Long>{
+@Table(name = "users")
+public class User{
 
-    @Column(nullable = false, unique = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "nick_name")
     private String nickName;
-    @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany
+    @Builder.Default
     @JoinColumn(name = "user_id")
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 }

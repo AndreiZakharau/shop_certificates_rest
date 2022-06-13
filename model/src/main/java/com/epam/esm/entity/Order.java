@@ -5,6 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,14 +15,21 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @Entity
-@Table
-public class Order extends BaseEntity <Long>{
+@Table(name = "orders")
+public class Order{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    private String nameCertificate;
-    private double priceCertificate;
+    @Column(name = "certificate_id")
+    @Builder.Default
+    @OneToMany
+    @JoinColumn(columnDefinition = "certificate_id")
+    private List<Certificate> certificates = new ArrayList<>();
+    @Column(name = "date_purchase")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     public LocalDateTime datePurchase;
 

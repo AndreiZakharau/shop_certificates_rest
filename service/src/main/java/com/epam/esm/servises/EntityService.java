@@ -1,6 +1,7 @@
 package com.epam.esm.servises;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EntityService<T>{
 
@@ -10,7 +11,7 @@ public interface EntityService<T>{
 
     public void updateEntity(long id, T t);
 
-    public T getEntity(long id);
+    public Optional<T> getEntity(long id);
 
     public void deleteEntity(long id);
 }
