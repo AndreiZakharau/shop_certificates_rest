@@ -7,6 +7,8 @@ import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.EntityService;
 import com.epam.esm.util.impl.CertificateValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,8 @@ public class CertificateServiceImpl implements EntityService<Certificate> {
 
     @Override
     @Transactional
-    public List<Certificate> getAllEntity() {
-        return repository.getAllEntity();
+    public Page<Certificate> getAllEntity(Pageable pageable) {
+        return repository.getAllEntity(pageable);
     }
 
     @Override
@@ -77,14 +79,15 @@ public class CertificateServiceImpl implements EntityService<Certificate> {
     }
 
     @Transactional
-    public List<Object[]> getAllCertificatesAndTags(){
-        return repository.getAllCertificatesAndTags();
+    public Page<Object[]> getAllCertificatesAndTags(Pageable pageable){
+        return repository.getAllCertificatesAndTags(pageable);
     }
 
     @Transactional
     public void saveCertificatesTag(){
 
-        List<Tag> tagList = tagRepositoryImpl.getAllEntity();
+        Pageable pageable = null;
+        Page<Tag> tagList = tagRepositoryImpl.getAllEntity(pageable); //Todo
         for (Tag t : tagList) {
             if (!repository.getCertificatesByTag(t).isEmpty()) {
                 List<Certificate> certificateList = repository.getCertificatesByTag(t);

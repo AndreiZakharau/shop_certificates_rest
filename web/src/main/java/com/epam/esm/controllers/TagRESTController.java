@@ -3,10 +3,13 @@ package com.epam.esm.controllers;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.servises.impl.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,8 +41,8 @@ public class TagRESTController {
      */
     @GetMapping("/tags")
     @ResponseStatus(HttpStatus.OK)
-    public List<Tag> listAllTags() {
-        return service.getAllEntity();
+    public Page<Tag> listAllTags(@PageableDefault(sort = {"id"},direction = Sort.Direction.DESC) Pageable pageable) {
+        return service.getAllEntity(pageable);
     }
 
     /**

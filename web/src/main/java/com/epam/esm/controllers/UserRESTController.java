@@ -3,10 +3,13 @@ package com.epam.esm.controllers;
 import com.epam.esm.entity.User;
 import com.epam.esm.servises.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,8 +36,8 @@ public class UserRESTController {
      */
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> listAllUsers() {
-        return userService.getAllEntity();
+    public Page<User> listAllUsers(@PageableDefault(sort = {"id"},direction = Sort.Direction.DESC) Pageable pageable) {
+        return userService.getAllEntity(pageable);
     }
 
     /**

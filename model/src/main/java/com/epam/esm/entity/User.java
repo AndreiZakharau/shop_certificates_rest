@@ -23,7 +23,7 @@ public class User{
     private String nickName;
     private String email;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Builder.Default
     @JoinColumn(name = "user_id")
     private List<Order> orders = new ArrayList<>();

@@ -5,10 +5,11 @@ import com.epam.esm.repositorys.TagRepository;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,12 +17,14 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Autowired
     private EntityManager manager;
+//    @Autowired
+//    private SessionFactory manager;
 
     @Override
-    public List<Tag> getAllEntity() {
+    public Page<Tag> getAllEntity(Pageable pageable) {
         Session session = manager.unwrap(Session.class);
         Query<Tag> query = session.createQuery("from Tag ", Tag.class);
-        return query.getResultList();
+        return (Page<Tag>) query.getResultList();
     }
 
     @Override
@@ -32,8 +35,9 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public Optional<Tag> getEntity(long id) {
-        return manager
-                .createQuery("select t from Tag as t where id = :id", Tag.class)
+        Session session = manager.unwrap(Session.class);
+        return session
+                .createQuery("select t from com.epam.esm.entity.Tag as t where id = :id", Tag.class)
                 .setParameter("id", id).getResultList().stream().findFirst();
     }
 

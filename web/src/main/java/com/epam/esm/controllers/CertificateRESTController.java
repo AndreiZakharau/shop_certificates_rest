@@ -3,6 +3,10 @@ package com.epam.esm.controllers;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.servises.impl.CertificateServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +42,8 @@ public class CertificateRESTController {
      */
     @GetMapping("/certificates")
     @ResponseStatus(HttpStatus.OK)
-    public List<Certificate> listAllCertificates() {
-        return service.getAllEntity();
+    public Page<Certificate> listAllCertificates(@PageableDefault(sort = {"id"},direction = Sort.Direction.DESC)Pageable pageable) {
+        return service.getAllEntity(pageable);
     }
 
     /**
@@ -95,8 +99,8 @@ public class CertificateRESTController {
      */
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<Object[]> getAllCertificatesAndTags(){
-        return service.getAllCertificatesAndTags();
+    public Page<Object[]> getAllCertificatesAndTags(@PageableDefault(sort = {"id"},direction = Sort.Direction.DESC)Pageable pageable){
+        return service.getAllCertificatesAndTags(pageable);
     }
 //
 //    /**

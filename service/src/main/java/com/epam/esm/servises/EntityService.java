@@ -1,11 +1,13 @@
 package com.epam.esm.servises;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Optional;
 
 public interface EntityService<T>{
 
-    public List<T> getAllEntity();
+    public Page<T> getAllEntity(Pageable pageable);
 
     public void saveEntity(T t);
 

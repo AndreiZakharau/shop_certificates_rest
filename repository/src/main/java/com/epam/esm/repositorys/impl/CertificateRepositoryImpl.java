@@ -6,6 +6,8 @@ import com.epam.esm.repositorys.CertificateRepository;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,11 +19,13 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Autowired
     private EntityManager manager;
+//@Autowired
+//private SessionFactory manager;
 
     @Override
-    public List<Certificate> getAllEntity() {
+    public Page<Certificate> getAllEntity(Pageable pageable) {
         Session session = manager.unwrap(Session.class);
-        return session.createQuery("select c from Certificate c",
+        return (Page<Certificate>) session.createQuery("select c from Certificate c",
                 Certificate.class).getResultList();
     }
 
@@ -47,9 +51,9 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         query.executeUpdate();
     }
 
-    public List<Object[]> getAllCertificatesAndTags(){
+    public Page<Object[]> getAllCertificatesAndTags(Pageable pageable){
         Session session = manager.unwrap(Session.class);
-        return session.createNativeQuery("select tags.id, tags.tag_name, c.id, c.certificate_name, c.description,c.duration, c.price, c.create_date, c.last_update_date" +
+        return (Page<Object[]>) session.createNativeQuery("select tags.id, tags.tag_name, c.id, c.certificate_name, c.description,c.duration, c.price, c.create_date, c.last_update_date" +
                 " FROM gift_certificate AS c JOIN certificates_tag AS ct ON ct.certificate_id = c.id " +
                 "JOIN tags ON tags.id = ct.tag_id ORDER BY tags.name", Object[].class).getResultList();
     }

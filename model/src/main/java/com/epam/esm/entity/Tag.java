@@ -13,7 +13,7 @@ import java.util.List;
 @ToString(exclude = "certificates")
 @Builder
 @Entity
-@Table
+@Table(name = "tags")
 public class Tag {
 
     @Id

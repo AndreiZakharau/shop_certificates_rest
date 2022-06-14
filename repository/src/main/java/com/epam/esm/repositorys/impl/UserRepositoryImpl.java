@@ -4,10 +4,11 @@ import com.epam.esm.entity.User;
 import com.epam.esm.repositorys.UserRepository;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,11 +16,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private EntityManager manager;
-
+//@Autowired
+//private SessionFactory manager;
+//
     @Override
-    public List<User> getAllEntity() {
+    public Page<User> getAllEntity(Pageable pageable) {
         Session session = manager.unwrap(Session.class);
-        return session.createQuery("select u from User as u", User.class).getResultList();
+        return (Page<User>) session.createQuery("select u from User as u", User.class).getResultList();
     }
 
     @Override

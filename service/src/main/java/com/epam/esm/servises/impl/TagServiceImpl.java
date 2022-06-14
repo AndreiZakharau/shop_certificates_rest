@@ -5,10 +5,11 @@ import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.EntityService;
 import com.epam.esm.util.impl.TagsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service("tagService")
@@ -29,8 +30,8 @@ public class TagServiceImpl implements EntityService<Tag> {
 
     @Override
     @Transactional
-    public List<Tag> getAllEntity() {
-        return repository.getAllEntity();
+    public Page<Tag> getAllEntity(Pageable pageable) {
+        return repository.getAllEntity(pageable);
     }
 
     @Override

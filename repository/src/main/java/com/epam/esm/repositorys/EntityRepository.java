@@ -1,11 +1,13 @@
 package com.epam.esm.repositorys;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Optional;
 
 public interface EntityRepository<T> {
 
-    public List<T> getAllEntity();
+    public Page<T> getAllEntity(Pageable pageable);
 
     public Optional<T> getEntity(long id);
 
