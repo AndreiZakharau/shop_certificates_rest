@@ -1,0 +1,32 @@
+package com.epam.esm.mapper.impl.tagMapper;
+
+import com.epam.esm.entitys.Tag;
+import com.epam.esm.mapper.Mapper;
+import com.epam.esm.models.tags.OnlyTag;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class OnlyTagMapper implements Mapper<OnlyTag, Tag> {
+    @Override
+    public Tag mapFrom(OnlyTag object) {
+        return Tag.builder()
+                .id(object.getId())
+                .tagName(object.getTagName())
+                .build();
+    }
+
+    public List<OnlyTag> buildListOnlyTag(List<Tag> tags) {
+        List<OnlyTag> tagList = new ArrayList<>();
+        for (Tag tag : tags) {
+            OnlyTag onlyTag = new OnlyTag ();
+            onlyTag.setId(tag.getId());
+            onlyTag.setTagName(tag.getTagName());
+            tagList.add(onlyTag);
+        }
+        return tagList;
+    }
+
+}

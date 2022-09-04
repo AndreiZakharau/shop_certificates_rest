@@ -1,37 +1,40 @@
 package com.epam.esm.servises.impl;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entitys.Tag;
+import com.epam.esm.exceptions.IncorrectDataException;
+import com.epam.esm.exceptions.NoSuchEntityException;
+import com.epam.esm.mapper.impl.tagMapper.OnlyTagMapper;
+import com.epam.esm.mapper.impl.tagMapper.TagModelMapper;
+import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
+import com.epam.esm.models.tags.OnlyTag;
+import com.epam.esm.models.tags.TagModel;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
-import com.epam.esm.servises.EntityService;
+import com.epam.esm.servises.TagService;
 import com.epam.esm.util.impl.TagsValidator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service("tagService")
-public class TagServiceImpl implements EntityService<Tag> {
+@RequiredArgsConstructor
+public class TagServiceImpl implements TagService<TagModel> {
 
-    @Autowired
-    private TagRepositoryImpl repository;
-    @Autowired
-    private TagsValidator tagsValidator;
-    @Autowired
-    private CertificateServiceImpl certificateServiceImpl;
 
-    public TagServiceImpl(TagRepositoryImpl repository, TagsValidator tagsValidator, CertificateServiceImpl certificateServiceImpl) {
-        this.repository = repository;
-        this.tagsValidator = tagsValidator;
-        this.certificateServiceImpl = certificateServiceImpl;
-    }
+    private final TagRepositoryImpl repository;
+    private final TagsValidator tagsValidator;
+//    private final CertificateServiceImpl certificateServiceImpl;
+    private final TagModelMapper tagModelMapper;
+    private final TagModelReadMapper readMapper;
+    private final OnlyTagMapper onlyTagMapper;
 
-    @Override
+
     @Transactional
-    public Page<Tag> getAllEntity(Pageable pageable) {
-        return repository.getAllEntity(pageable);
+    public List<TagModel> getAllEntity(int limit, int offset) {
+        List<Tag> tags = repository.getAllEntity(limit, offset);
+        return readMapper.buildListTag(tags);
     }
 
     @Override
@@ -40,36 +43,50 @@ public class TagServiceImpl implements EntityService<Tag> {
         if(tagsValidator.isValid(tag)) {
             repository.addEntity(tag);
         }else {
-            //TODO
-//            throw new IncorrectDataException("message.not.valid");
+            throw new IncorrectDataException("message.not.valid");
         }
-        certificateServiceImpl.saveCertificatesTag();
+//        certificateServiceImpl.saveCertificatesTag();
     }
 
     @Override
     @Transactional
-    public void updateEntity(long id, Tag tag){
-        if ((repository.getEntity(id)).isPresent()){
-           if (tagsValidator.isValid(tag)){
-               repository.addEntity(tag);
+    public void updateEntity(long id, TagModel tagModel){
+        Optional<Tag> tag = repository.getEntity(id);
+        if (tag.isPresent()){
+            tagModel.setId(tagModel.getId());
+           if (tagsValidator.isValidModel(tagModel)){
+              repository.updateEntity(tagModelMapper.mapFrom(tagModel));
            }else{
-               //TODO throw new IncorrectDataException("message.not.valid");
+                throw new IncorrectDataException("message.not.valid");
            }
         }else {
             return ; //TODO (бросить исключение, что токого id нет)
 
         }
-        certificateServiceImpl.saveCertificatesTag();
+//        certificateServiceImpl.saveCertificatesTag();
     }
 
     @Override
     @Transactional
-    public Optional<Tag> getEntity(long id) {
-        Optional<Tag> tag = repository.getEntity(id);
+    public List<OnlyTag> listOnlyTags() {
+        List<Tag> tags = repository.getOnlyTags();
+        return onlyTagMapper.buildListOnlyTag(tags);
+    }
+
+    @Override
+    @Transactional
+    public int countAllTags() {
+        return repository.countAllTags();
+    }
+
+    @Override
+    @Transactional
+    public Optional<TagModel> getEntity(long id) {
+        Optional<Tag> tag = Optional.ofNullable(repository.getEntity(id)).orElseThrow();
         if(tag.isEmpty()){
-//            throw new NoSuchEntityException("message.tag.with.id");
+            throw new NoSuchEntityException("message.tag.with.id");
         }
-        return tag;
+        return tag.map(readMapper::mapFrom);
     }
 
     @Override
@@ -78,7 +95,11 @@ public class TagServiceImpl implements EntityService<Tag> {
         if(repository.getEntity(id).isPresent()){
             repository.deleteEntity(id);
         }else {
-            // TODO           throw new NoSuchEntityException("message.tag.with.id");
+                    throw new NoSuchEntityException("message.tag.with.id");
         }
     }
+
+    
+
+
 }

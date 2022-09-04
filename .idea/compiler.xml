@@ -12,10 +12,8 @@
         <module name="shop_certificates_rest.main" />
         <module name="shop_certificates_rest.repository.main" />
         <module name="shop_certificates_rest.repository.test" />
-        <module name="shop_certificates_rest.model.main" />
         <module name="shop_certificates_rest.web.main" />
         <module name="shop_certificates_rest.service.test" />
-        <module name="shop_certificates_rest.model.test" />
         <module name="shop_certificates_rest.test" />
         <module name="shop_certificates_rest.service.main" />
       </profile>

@@ -1,6 +1,6 @@
 package com.epam.esm.util.impl;
 
-import com.epam.esm.entity.Certificate;
+import com.epam.esm.entitys.Certificate;
 import com.epam.esm.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -9,37 +9,50 @@ public class CertificateValidator implements Validator<Certificate> {
 
     private static final int MIN_LETTERS = 2;
     private static final int MAX_LETTERS = 120;
-    private static final String TEXT_PATTERN = "[^\s]+[A-zА-я0-9-\\s'\"-.]*";
+    private static final String TEXT_PATTERN = "[^\s]+[A-Za-z0-9-\s'\"-.]*";//[^s]+[A-Za-zА-Яа-я0-9-s'"-.]* посде добовления русского
 
     @Override
     public boolean isValid(Certificate certificate) {
-        return isNameValid(certificate.getCertificateName()) &&
-                isDescriptionValid(certificate.getDescription()) &&
+        return (isNameValid(certificate.getCertificateName()) &&
                 isPriceValid(certificate.getPrice()) &&
-                isDurationValid(certificate.getDuration());
+                isDurationValid(certificate.getDuration()) &&
+                isDescriptionValid(certificate.getDescription()));
     }
 
     public boolean isNameValid(String name) {
+        boolean result = false;
         if (name == null) {
-            return false;
         } else
-            return name.length() >= MIN_LETTERS && name.length() <= MAX_LETTERS
-                    && name.matches(TEXT_PATTERN);
+            if (name.length() >= MIN_LETTERS && name.length() <= MAX_LETTERS
+                    && name.matches(TEXT_PATTERN)){
+                result = true;
+            }
+            return result;
     }
 
     public boolean isDescriptionValid(String description) {
+        boolean result = false;
         if (description == null) {
-            return false;
         } else
-            return description.length() >= MIN_LETTERS && description.length() <= MAX_LETTERS
-                    && description.matches(TEXT_PATTERN);
+            if (description.length() >= MIN_LETTERS && description.length() <= MAX_LETTERS) {
+                result = true;
+            }
+            return result;
     }
 
     public boolean isDurationValid(int duration) {
-        return duration >= 1;
+        boolean result = false;
+        if(duration>=1) {
+            result = true;
+        }
+            return result;
     }
 
     public boolean isPriceValid(double price) {
-        return price >= 0;
+        boolean result = false;
+        if(price>=0) {
+            result = true;
+        }
+            return result;
     }
 }

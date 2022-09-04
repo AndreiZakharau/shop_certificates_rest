@@ -1,4 +1,7 @@
 allprojects {
+//    id 'org.springframework.boot' version '2.6.7'
+//    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+//    id 'java
 
     apply plugin: 'java'
     apply plugin: 'java-library'
@@ -19,16 +22,17 @@ allprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-devtools:2.6.7'
-//        implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.7'
-        implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.7'
-        implementation 'org.springframework:spring-orm:5.3.19'
+        implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.7.0'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.7'
+        implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
+        implementation 'org.springframework:spring-core:5.3.20'
+        implementation 'org.springframework:spring-orm:5.3.20'
         implementation 'org.hibernate:hibernate-core:5.6.9.Final'
 
         implementation 'javax.persistence:javax.persistence-api:2.2'
         compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
-        runtimeOnly 'mysql:mysql-connector-java:8.0.29'
+        compileOnly 'mysql:mysql-connector-java:8.0.29'
         implementation 'com.mchange:c3p0:0.9.5.5'
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'

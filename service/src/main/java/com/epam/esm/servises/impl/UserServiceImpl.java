@@ -1,26 +1,25 @@
 package com.epam.esm.servises.impl;
 
-import com.epam.esm.entity.User;
+import com.epam.esm.entitys.User;
 import com.epam.esm.repositorys.impl.UserRepositoryImpl;
-import com.epam.esm.servises.EntityService;
+import com.epam.esm.servises.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service("UserService")
 @Transactional
-public class UserServiceImpl implements EntityService <User> {
+public class UserServiceImpl implements UserService<User> {
 
     @Autowired
     private UserRepositoryImpl userRepositoryImpl;
 
     @Override
-    public Page<User> getAllEntity(Pageable pageable) {
-        return userRepositoryImpl.getAllEntity(pageable);
+    public List<User> getAllEntity(int limit, int offset) {
+        return userRepositoryImpl.getAllEntity(limit, offset);
     }
 
     @Override
@@ -62,7 +61,4 @@ public class UserServiceImpl implements EntityService <User> {
         }
     }
 
-    public Optional<User> getUserByName(String name){
-        return userRepositoryImpl.getUserByName(name);
-    }
 }

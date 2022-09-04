@@ -1,16 +1,16 @@
 package com.epam.esm.repositorys.impl;
 
-import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entitys.Certificate;
+import com.epam.esm.entitys.Tag;
 import com.epam.esm.repositorys.CertificateRepository;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,74 +18,100 @@ import java.util.Optional;
 public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Autowired
-    private EntityManager manager;
-//@Autowired
-//private SessionFactory manager;
+    private SessionFactory manager;
 
     @Override
-    public Page<Certificate> getAllEntity(Pageable pageable) {
-        Session session = manager.unwrap(Session.class);
-        return (Page<Certificate>) session.createQuery("select c from Certificate c",
-                Certificate.class).getResultList();
+    public List<Certificate> getAllEntity(int limit, int offset) {
+        Session session = manager.getCurrentSession();
+        return session.createQuery("select c from Certificate c", Certificate.class)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
     public Optional<Certificate> getEntity(long id) {
-        Session session = manager.unwrap(Session.class);
+        Session session = manager.getCurrentSession();
         return session
-                .createQuery("select c from Certificate as c where c.id = :id ", Certificate.class)
-                .setParameter("id", id).getResultList().stream().findFirst();
+                .createQuery("select c from Certificate c where c.id = :id order by c.id ", Certificate.class)
+                .setParameter("id", id).uniqueResultOptional();
     }
 
     @Override
     public void addEntity(Certificate certificate) {
-        Session session = manager.unwrap(Session.class);
-        session.saveOrUpdate(certificate);
+        Session session = manager.getCurrentSession();
+        session.save(certificate);
+    }
+
+//    @Override
+    public void deleteEntity(Certificate certificate) {
+        Session session = manager.getCurrentSession();
+        session.delete(certificate);
+
     }
 
     @Override
-    public void deleteEntity(long id) {
-      Session session = manager.unwrap(Session.class);
-        Query query = session.createQuery("delete from Certificate  where id =:id");
-        query.setParameter("id",id);
-        query.executeUpdate();
+    public void updateEntity(Certificate certificate) {
+        Session session = manager.getCurrentSession();
+        session.merge(certificate);
     }
 
-    public Page<Object[]> getAllCertificatesAndTags(Pageable pageable){
+    public List<Certificate> getAllCertificates(int limit, int offset) {
         Session session = manager.unwrap(Session.class);
-        return (Page<Object[]>) session.createNativeQuery("select tags.id, tags.tag_name, c.id, c.certificate_name, c.description,c.duration, c.price, c.create_date, c.last_update_date" +
-                " FROM gift_certificate AS c JOIN certificates_tag AS ct ON ct.certificate_id = c.id " +
-                "JOIN tags ON tags.id = ct.tag_id ORDER BY tags.name", Object[].class).getResultList();
+        return  session.createQuery("select c from Certificate c join Tag t join Order o ORDER BY c.id",Certificate.class)
+                .setMaxResults(limit)
+                .setFirstResult(offset).getResultList();
     }
 
-    public Object saveCertificatesTag(Certificate c, Tag t){
-        Session session = manager.unwrap(Session.class);
-        return session.createNativeQuery("INSERT INTO certificates_tag VALUES( c.id =:c , t.id =:t)")
-                .setParameter("c", c.getId())
-                .setParameter("t", t.getId());
+    public void saveCertificatesTag(long c, long t) {
+        Session session = manager.getCurrentSession();
+        session.createNativeQuery("INSERT INTO certificates_tag VALUES(?, ?)")
+                .setParameter(1, c)
+                .setParameter(2, t)
+                .executeUpdate();
     }
 
-    public List<Object[]> getCertificateAndTag(Certificate c, Tag t){
-        Session session = manager.unwrap(Session.class);
-        return session.createNativeQuery("SELECT * FROM certificates_tag" +
-                " WHERE certificate_id=:cId and tag_id=:tId",Object[].class)
-                .setParameter("cId", c.getId())
+
+    public List<Certificate> getCertificateAndTag(Certificate c, Tag t){
+        Session session = manager.getCurrentSession();
+        return session.createQuery("select c from Certificate c " +
+                        "join c.tags t where t.id=:tId and c.id=:cId",Certificate.class)
                 .setParameter("tId", t.getId())
-                .getResultList();
+                .setParameter("cId", c.getId()).getResultList();
     }
 
-    public List<Certificate> getCertificatesByTag(Tag t){
-        Session session = manager.unwrap(Session.class);
-        return session.createQuery("select c from Certificate c where Tag.tagName =:name", Certificate.class)
-                .setParameter("name", t.getTagName())
-                .getResultList();
-    }
+//    public List<Certificate> getCertificatesByTag(String tagName) {
+//        Session session = manager.getCurrentSession();
+//
+//        return session.createQuery("select c from Certificate c where Tag.tagName=:name", Certificate.class)
+//                .setParameter("name", tagName)
+//                .getResultList();
+//    }
 
-    public List getCertificatesByName(String name) {
-        Session session = manager.unwrap(Session.class);
-        return session.createNativeQuery("SELECT * FROM gift_certificate as c WHERE  RLIKE (c.certificate_name =:name)")
+    public List<Certificate> getCertificatesByName(String name) {
+        Session session = manager.getCurrentSession();
+        return session.createQuery( "select c from Certificate c  where c.certificateName like concat('%',:name,'%')", Certificate.class)
                 .setParameter("name", name)
+                .list();
+    }
+
+    public List<Certificate> getAllCertificatesAndTags(int limit, int offset) {
+        Session session = manager.getCurrentSession();
+        return session.createQuery("select c from Certificate c " +
+                        "join c.tags t group by t.tagName", Certificate.class)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
                 .getResultList();
+    }
+
+    public int countAllCertificates() {
+        Session session = manager.getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Certificate> root = criteriaQuery.from(Certificate.class);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        return session.createQuery(criteriaQuery).uniqueResult().intValue();
+
     }
 }
 

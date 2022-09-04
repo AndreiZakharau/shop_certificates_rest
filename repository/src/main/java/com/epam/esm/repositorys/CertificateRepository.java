@@ -1,14 +1,13 @@
 package com.epam.esm.repositorys;
 
-import com.epam.esm.entity.Certificate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.epam.esm.entitys.Certificate;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CertificateRepository extends EntityRepository<Certificate> {
     @Override
-    Page<Certificate> getAllEntity(Pageable pageable);
+    List<Certificate> getAllEntity(int limit, int offset);
 
     @Override
     Optional<Certificate> getEntity(long id);
@@ -16,6 +15,11 @@ public interface CertificateRepository extends EntityRepository<Certificate> {
     @Override
     void addEntity(Certificate certificate);
 
+//    @Override
+//    void deleteEntity(long id);
+
     @Override
-    void deleteEntity(long id);
+    default void updateEntity(Certificate certificate) {
+
+    }
 }

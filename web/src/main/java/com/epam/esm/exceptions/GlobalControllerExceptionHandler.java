@@ -1,8 +1,6 @@
 package com.epam.esm.exceptions;
 
-import com.epam.esm.entity.ModelException;
-import com.epam.esm.repositorys.exceptions.IncorrectDataException;
-import com.epam.esm.repositorys.exceptions.NoSuchEntityException;
+import com.epam.esm.entitys.ModelException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;

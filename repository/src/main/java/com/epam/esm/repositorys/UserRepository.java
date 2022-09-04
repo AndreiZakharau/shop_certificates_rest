@@ -1,14 +1,13 @@
 package com.epam.esm.repositorys;
 
-import com.epam.esm.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.epam.esm.entitys.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends EntityRepository<User> {
     @Override
-    Page<User> getAllEntity(Pageable pageable);
+    List<User> getAllEntity(int limit, int offset);
 
     @Override
     Optional<User> getEntity(long id);
@@ -16,7 +15,7 @@ public interface UserRepository extends EntityRepository<User> {
     @Override
     void addEntity(User user);
 
-    @Override
+//    @Override
     void deleteEntity(long id);
 
     Optional<User> getUserByName(String name);

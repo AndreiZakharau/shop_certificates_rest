@@ -1,24 +1,26 @@
 package com.epam.esm.servises;
 
-import com.epam.esm.entity.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.epam.esm.entitys.Tag;
+import com.epam.esm.models.tags.OnlyTag;
+import com.epam.esm.models.tags.TagModel;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface TagService extends EntityService<Tag> {
-    @Override
-    Page<Tag> getAllEntity(Pageable pageable);
+public interface TagService <T> {
 
-    @Override
+//    List<T> getAllEntity(int limit, int offset);
+
+    Optional<TagModel> getEntity(long id);
+
+    void deleteEntity(long id);
+
     void saveEntity(Tag tag);
 
-    @Override
-    void updateEntity(long id, Tag tag);
+    void updateEntity(long id, T t);
 
-    @Override
-    Optional<Tag> getEntity(long id);
+    List<OnlyTag> listOnlyTags();
 
-    @Override
-    void deleteEntity(long id);
+    int countAllTags();
+
 }

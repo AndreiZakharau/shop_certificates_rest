@@ -1,24 +1,23 @@
 package com.epam.esm.servises;
 
-import com.epam.esm.entity.Certificate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.epam.esm.entitys.Certificate;
+import com.epam.esm.models.certificates.OnlyCertificate;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface CertificateService extends EntityService<Certificate> {
-    @Override
-    Page<Certificate> getAllEntity(Pageable pageable);
+public interface CertificateService {
 
-    @Override
     void saveEntity(Certificate certificate);
 
-    @Override
-    void updateEntity(long id, Certificate certificate);
+    void updateEntity(long id, OnlyCertificate certificateModel);
 
-    @Override
+    List<OnlyCertificate> getAllEntity(int limit, int offset);
+
     Optional<Certificate> getEntity(long id);
 
-    @Override
     void deleteEntity(long id);
+
+    int countAllCertificates();
+
 }

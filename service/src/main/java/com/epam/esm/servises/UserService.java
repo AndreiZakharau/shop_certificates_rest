@@ -1,24 +1,16 @@
 package com.epam.esm.servises;
 
-import com.epam.esm.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
-public interface UserService extends EntityService<User> {
-    @Override
-    Page<User> getAllEntity(Pageable pageable);
+public interface UserService <T> {
+    List<T> getAllEntity(int limit, int offset);
 
-    @Override
-    void saveEntity(User user);
+    void saveEntity(T t);
 
-    @Override
-    void updateEntity(long id, User user);
+    void updateEntity(long id, T t);
 
-    @Override
-    Optional<User> getEntity(long id);
+    Optional<T> getEntity(long id);
 
-    @Override
     void deleteEntity(long id);
 }
