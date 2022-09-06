@@ -2,9 +2,8 @@ package com.epam.esm.mapper.impl.tagMapper;
 
 import com.epam.esm.entitys.Tag;
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateMapper;
+import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.models.tags.TagModel;
-import com.epam.esm.repositorys.CertificateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +12,10 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TagModelMapper implements Mapper<TagModel, Tag> {
+public class CreateTagFromTagModelMapper implements Mapper<TagModel, Tag> {
 
-    private final CreateCertificateMapper mapper;
-    private final CertificateRepository certificateRepository;
+    private final CreateCertificateFromOnlyCertificateMapper mapper;
+
     @Override
     public Tag mapFrom(TagModel object) {
         return Tag.builder()

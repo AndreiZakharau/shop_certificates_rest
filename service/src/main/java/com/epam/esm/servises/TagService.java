@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface TagService <T> {
 
-//    List<T> getAllEntity(int limit, int offset);
+    List<T> getAllEntity(int limit, int offset);
 
-    Optional<TagModel> getEntity(long id);
+    Optional<TagModel> findById(long id);
 
     void deleteEntity(long id);
 

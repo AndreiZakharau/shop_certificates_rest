@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CreateCertificateMapper implements Mapper<OnlyCertificate, Certificate> {
+public class CreateCertificateFromOnlyCertificateMapper implements Mapper<OnlyCertificate, Certificate> {
+
     @Override
     public Certificate mapFrom(OnlyCertificate object) {
         return Certificate.builder()

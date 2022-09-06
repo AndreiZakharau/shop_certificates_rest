@@ -10,7 +10,7 @@ public interface UserRepository extends EntityRepository<User> {
     List<User> getAllEntity(int limit, int offset);
 
     @Override
-    Optional<User> getEntity(long id);
+    Optional<User> getEntityById(long id);
 
     @Override
     void addEntity(User user);

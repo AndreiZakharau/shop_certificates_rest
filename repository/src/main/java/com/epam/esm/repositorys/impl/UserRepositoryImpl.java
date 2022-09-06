@@ -25,7 +25,7 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     }
 
     @Override
-    public Optional<User> getEntity(long id) {
+    public Optional<User> getEntityById(long id) {
         Session session = manager.getCurrentSession();
         return session.createQuery("select u from User u where u.id =:id", User.class)
                 .setParameter("id", id)

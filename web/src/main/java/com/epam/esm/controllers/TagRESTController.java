@@ -1,7 +1,7 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entitys.Tag;
-import com.epam.esm.mapper.impl.tagMapper.TagModelMapper;
+import com.epam.esm.mapper.impl.tagMapper.CreateTagFromTagModelMapper;
 import com.epam.esm.models.tags.OnlyTag;
 import com.epam.esm.models.tags.TagModel;
 import com.epam.esm.pagination.Pagination;
@@ -24,21 +24,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class TagRESTController {
 
     private final TagServiceImpl service;
-    private final TagModelMapper mapper;
+    private final CreateTagFromTagModelMapper mapper;
     @Autowired
-    public TagRESTController(TagServiceImpl service, TagModelMapper mapper) {
+    public TagRESTController(TagServiceImpl service, CreateTagFromTagModelMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
-
-//    public TagRESTController(TagServiceImpl service, TagModelMapper mapper) {
-//        this.service = service;
-//        this.mapper = mapper;
-//    }
-//    @Autowired
-//    public TagRESTController(TagServiceImpl service) {
-//        this.service = service;
-//    }
 
 
     /**
@@ -72,7 +63,7 @@ public class TagRESTController {
     @GetMapping("/tags/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<TagModel> getTag(@PathVariable long id) {
-        return service.getEntity(id);
+        return service.findById(id);
     }
 
     /**

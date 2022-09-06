@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode(of = {"certificateName","description"})
+//@ToString
+//@EqualsAndHashCode(of = {"certificateName","description"})
 // extends RepresentationModel<OnlyCertificate> если понадобиться links
 public class OnlyCertificate  {
 

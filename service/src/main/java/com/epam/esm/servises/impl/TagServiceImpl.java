@@ -3,8 +3,8 @@ package com.epam.esm.servises.impl;
 import com.epam.esm.entitys.Tag;
 import com.epam.esm.exceptions.IncorrectDataException;
 import com.epam.esm.exceptions.NoSuchEntityException;
-import com.epam.esm.mapper.impl.tagMapper.OnlyTagMapper;
-import com.epam.esm.mapper.impl.tagMapper.TagModelMapper;
+import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
+import com.epam.esm.mapper.impl.tagMapper.CreateTagFromTagModelMapper;
 import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
 import com.epam.esm.models.tags.OnlyTag;
 import com.epam.esm.models.tags.TagModel;
@@ -25,10 +25,10 @@ public class TagServiceImpl implements TagService<TagModel> {
 
     private final TagRepositoryImpl repository;
     private final TagsValidator tagsValidator;
-//    private final CertificateServiceImpl certificateServiceImpl;
-    private final TagModelMapper tagModelMapper;
+    private final CertificateServiceImpl certificateServiceImpl;
+    private final CreateTagFromTagModelMapper createTagFromTagModelMapper;
     private final TagModelReadMapper readMapper;
-    private final OnlyTagMapper onlyTagMapper;
+    private final OnlyTagReadMapper onlyTagReadMapper;
 
 
     @Transactional
@@ -45,17 +45,17 @@ public class TagServiceImpl implements TagService<TagModel> {
         }else {
             throw new IncorrectDataException("message.not.valid");
         }
-//        certificateServiceImpl.saveCertificatesTag();
+        certificateServiceImpl.saveCertificatesTag();
     }
 
     @Override
     @Transactional
     public void updateEntity(long id, TagModel tagModel){
-        Optional<Tag> tag = repository.getEntity(id);
+        Optional<Tag> tag = repository.getEntityById(id);
         if (tag.isPresent()){
             tagModel.setId(tagModel.getId());
            if (tagsValidator.isValidModel(tagModel)){
-              repository.updateEntity(tagModelMapper.mapFrom(tagModel));
+              repository.updateEntity(createTagFromTagModelMapper.mapFrom(tagModel));
            }else{
                 throw new IncorrectDataException("message.not.valid");
            }
@@ -63,14 +63,14 @@ public class TagServiceImpl implements TagService<TagModel> {
             return ; //TODO (бросить исключение, что токого id нет)
 
         }
-//        certificateServiceImpl.saveCertificatesTag();
+        certificateServiceImpl.saveCertificatesTag();
     }
 
     @Override
     @Transactional
     public List<OnlyTag> listOnlyTags() {
         List<Tag> tags = repository.getOnlyTags();
-        return onlyTagMapper.buildListOnlyTag(tags);
+        return onlyTagReadMapper.buildListOnlyTag(tags);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class TagServiceImpl implements TagService<TagModel> {
 
     @Override
     @Transactional
-    public Optional<TagModel> getEntity(long id) {
-        Optional<Tag> tag = Optional.ofNullable(repository.getEntity(id)).orElseThrow();
+    public Optional<TagModel> findById(long id) {
+        Optional<Tag> tag = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
         if(tag.isEmpty()){
             throw new NoSuchEntityException("message.tag.with.id");
         }
@@ -92,7 +92,7 @@ public class TagServiceImpl implements TagService<TagModel> {
     @Override
     @Transactional
     public void deleteEntity(long id) {
-        if(repository.getEntity(id).isPresent()){
+        if(repository.getEntityById(id).isPresent()){
             repository.deleteEntity(id);
         }else {
                     throw new NoSuchEntityException("message.tag.with.id");

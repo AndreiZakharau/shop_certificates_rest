@@ -10,6 +10,7 @@ import java.util.List;
 
 @Service
 public class OnlyCertificateReadMapper implements Mapper<Certificate, OnlyCertificate> {
+
     @Override
     public OnlyCertificate mapFrom(Certificate object) {
         return new OnlyCertificate(

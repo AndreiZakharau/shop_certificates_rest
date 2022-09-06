@@ -6,9 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -42,14 +41,14 @@ public class Certificate implements Serializable {
             name = "certificates_tag",
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<Tag> tags =  new HashSet<>();
+    private List<Tag> tags =  new ArrayList<>();
 
     public void addTag(Tag tag) {
         tags.add(tag);
         tag.getCertificates().add(this);
     }
 
-    @ManyToMany(mappedBy = "certificates",fetch = FetchType.EAGER)
-    private List<Order> orders;
+//    @ManyToMany(mappedBy = "certificates",fetch = FetchType.EAGER)
+//    private List<Order> orders;
 
 }

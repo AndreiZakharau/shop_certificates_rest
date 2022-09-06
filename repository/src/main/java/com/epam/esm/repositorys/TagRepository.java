@@ -10,7 +10,7 @@ public interface TagRepository extends EntityRepository<Tag> {
     List<Tag> getAllEntity(int limit, int offset);
 
     @Override
-    Optional<Tag> getEntity(long id);
+    Optional<Tag> getEntityById(long id);
 
     @Override
     void addEntity(Tag tag);

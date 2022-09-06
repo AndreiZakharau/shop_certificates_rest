@@ -30,7 +30,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     }
 
     @Override
-    public Optional<Certificate> getEntity(long id) {
+    public Optional<Certificate> getEntityById(long id) {
         Session session = manager.getCurrentSession();
         return session
                 .createQuery("select c from Certificate c where c.id = :id order by c.id ", Certificate.class)
@@ -80,13 +80,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 .setParameter("cId", c.getId()).getResultList();
     }
 
-//    public List<Certificate> getCertificatesByTag(String tagName) {
-//        Session session = manager.getCurrentSession();
-//
-//        return session.createQuery("select c from Certificate c where Tag.tagName=:name", Certificate.class)
-//                .setParameter("name", tagName)
-//                .getResultList();
-//    }
 
     public List<Certificate> getCertificatesByName(String name) {
         Session session = manager.getCurrentSession();

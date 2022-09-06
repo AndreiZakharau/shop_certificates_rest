@@ -48,7 +48,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     }
 
     @Override
-    public Optional<Tag> getEntity(long id) {
+    public Optional<Tag> getEntityById(long id) {
         Session session = manager.getCurrentSession();
         return session
                 .createQuery("select t from Tag t where t.id = :id", Tag.class)
@@ -86,5 +86,11 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
 
     }
 
+    public Optional<Tag> getTagByName(String tagName) {
+        Session session = manager.getCurrentSession();
+        return session.createQuery("select t from Tag  t where tagName =:tagName",Tag.class)
+                .setParameter("tagName",tagName).uniqueResultOptional();
+
+    };
 
 }

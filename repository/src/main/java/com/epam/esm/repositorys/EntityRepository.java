@@ -7,7 +7,7 @@ public interface EntityRepository<T>{
 
     public List<T> getAllEntity(int limit, int offset);
 
-    public Optional<T> getEntity(long id);
+    public Optional<T> getEntityById(long id);
 
     public void addEntity(T t);
 

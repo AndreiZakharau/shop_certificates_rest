@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService<User> {
 
     @Override
     public void updateEntity(long id, User user) {
-        Optional<User> user1 = userRepositoryImpl.getEntity(id);
+        Optional<User> user1 = userRepositoryImpl.getEntityById(id);
         if(user1.isPresent()) {
             userRepositoryImpl.addEntity(user);
         }else {
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService<User> {
 
     @Override
     public Optional<User> getEntity(long id) {
-        Optional<User> user = userRepositoryImpl.getEntity(id);
+        Optional<User> user = userRepositoryImpl.getEntityById(id);
         if(user.isEmpty()) {
             //TODO пользователь с таким id не найден
         }
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService<User> {
 
     @Override
     public void deleteEntity(long id) {
-        Optional<User> user = userRepositoryImpl.getEntity(id);
+        Optional<User> user = userRepositoryImpl.getEntityById(id);
         if(user.isEmpty()) {
             //TODO пользователь с таким id не найден
         }else {

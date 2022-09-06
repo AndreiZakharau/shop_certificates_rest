@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OnlyTagMapper implements Mapper<OnlyTag, Tag> {
+public class CreateTagFromOnlyTagMapper implements Mapper<OnlyTag, Tag> {
     @Override
     public Tag mapFrom(OnlyTag object) {
         return Tag.builder()
@@ -18,15 +18,14 @@ public class OnlyTagMapper implements Mapper<OnlyTag, Tag> {
                 .build();
     }
 
-    public List<OnlyTag> buildListOnlyTag(List<Tag> tags) {
-        List<OnlyTag> tagList = new ArrayList<>();
-        for (Tag tag : tags) {
-            OnlyTag onlyTag = new OnlyTag ();
-            onlyTag.setId(tag.getId());
-            onlyTag.setTagName(tag.getTagName());
-            tagList.add(onlyTag);
+    public List<Tag> buildListTags(List<OnlyTag> onlyTags) {
+        List<Tag> tags = new ArrayList<>();
+        for (OnlyTag onlyTag : onlyTags) {
+            Tag tag = new Tag ();
+            tag.setId(tag.getId());
+            tag.setTagName(tag.getTagName());
         }
-        return tagList;
+        return tags;
     }
 
 }

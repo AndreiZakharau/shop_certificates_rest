@@ -10,7 +10,7 @@ public interface CertificateRepository extends EntityRepository<Certificate> {
     List<Certificate> getAllEntity(int limit, int offset);
 
     @Override
-    Optional<Certificate> getEntity(long id);
+    Optional<Certificate> getEntityById(long id);
 
     @Override
     void addEntity(Certificate certificate);
