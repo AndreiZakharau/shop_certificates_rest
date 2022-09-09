@@ -13,11 +13,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderModel {
-
-    private long id;
-    ReadUserModel userModel;
-    List<OnlyCertificate> certificates;
+public class CreatOrderModel {
+    ReadUserModel user;
+    List<OnlyCertificate> certificate;
     private BigDecimal cost;
-    private LocalDateTime datePurchase;
+    public LocalDateTime datePurchase;
 }

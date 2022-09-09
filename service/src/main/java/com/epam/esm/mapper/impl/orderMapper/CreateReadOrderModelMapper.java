@@ -21,7 +21,8 @@ public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrderModel>
         return new ReadOrderModel(
                 object.getId(),
                 certificate.buildListCertificates(object.getCertificates()),
-                object.datePurchase
+                object.getCost(),
+                object.getDatePurchase()
         );
     }
 
@@ -31,6 +32,7 @@ public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrderModel>
             ReadOrderModel readOrderModel = new ReadOrderModel();
             readOrderModel.setId(order.getId());
             certificate.buildListCertificates(order.getCertificates());
+            readOrderModel.setCost(order.getCost());
             readOrderModel.setDatePurchase(order.datePurchase);
             list.add(readOrderModel);
         }

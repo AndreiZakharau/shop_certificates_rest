@@ -21,7 +21,8 @@ public class OrderReadMapper implements Mapper<Order, OrderModel> {
                 object.getId(),
                 userModel.mapFrom(object.getUser()),
                 certificate.buildListCertificates(object.getCertificates()),
-                object.datePurchase
+                object.getCost(),
+                object.getDatePurchase()
         );
     }
 }
