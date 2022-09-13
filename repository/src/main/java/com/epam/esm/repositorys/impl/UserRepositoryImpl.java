@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     @Override
     public List<User> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select u from User  u", User.class).getResultList();
+        return session.createQuery("select u from User u ", User.class).getResultList();
     }
 
     @Override
@@ -70,4 +70,12 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
         criteriaQuery.select(criteriaBuilder.count(tagRoot));
         return session.createQuery(criteriaQuery).uniqueResult().intValue();
     }
+
+//    public void addCertificate(Certificate certificate) {
+//        Session session = manager.getCurrentSession();
+//        session.createNativeQuery("INSERT INTO certificates_tag VALUES(?, ?)")
+//                .setParameter(1, c)
+//                .setParameter(2, t)
+//                .executeUpdate();
+//    }
 }

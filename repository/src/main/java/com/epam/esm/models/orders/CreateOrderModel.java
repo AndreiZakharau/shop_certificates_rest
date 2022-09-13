@@ -4,7 +4,6 @@ import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.models.users.ReadUserModel;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,9 +12,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatOrderModel {
+public class CreateOrderModel {
     ReadUserModel user;
     List<OnlyCertificate> certificate;
-    private BigDecimal cost;
+    private double cost;
     public LocalDateTime datePurchase;
 }

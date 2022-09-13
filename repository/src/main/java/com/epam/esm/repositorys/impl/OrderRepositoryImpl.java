@@ -1,5 +1,6 @@
 package com.epam.esm.repositorys.impl;
 
+import com.epam.esm.entitys.Order;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,12 @@ public class OrderRepositoryImpl {
                 .setParameter(2, c)
                 .executeUpdate();
     }
+
+    public Order saveOrder(Order order){
+        Session session = manager.getCurrentSession();
+        session.saveOrUpdate(order);
+        return order;
+    }
+
 
 }

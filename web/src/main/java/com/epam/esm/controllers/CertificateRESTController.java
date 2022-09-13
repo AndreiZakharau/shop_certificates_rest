@@ -123,20 +123,20 @@ public class CertificateRESTController {
     }
 
 
-    @GetMapping("/all")
-    public CollectionModel<Certificate> getAllCertificates(@RequestParam("page") int page,
-                                                                  @RequestParam("size") int size) {
-        int offset = Pagination.offset(page, size);
-        int totalRecords = service.countAllCertificates();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
-        List<Certificate> certificates = service.getAllCertificates(size, offset);
-        return CollectionModel.of(certificates, prevLink, nextLink);
-    }
+//    @GetMapping("/all")
+//    public CollectionModel<Certificate> getAllCertificates(@RequestParam("page") int page,
+//                                                                  @RequestParam("size") int size) {
+//        int offset = Pagination.offset(page, size);
+//        int totalRecords = service.countAllCertificates();
+//        int pages = Pagination.findPages(totalRecords, size);
+//        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
+//        Link prevLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findPrevPage(page), size))
+//                .withRel("prev");
+//        Link nextLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findNextPage(page, lastPage), size))
+//                .withRel("next");
+//        List<Certificate> certificates = service.getAllCertificates(size, offset);
+//        return CollectionModel.of(certificates, prevLink, nextLink);
+//    }
 
 //    /**
 //     * Sort the list of certificates by date, by name.

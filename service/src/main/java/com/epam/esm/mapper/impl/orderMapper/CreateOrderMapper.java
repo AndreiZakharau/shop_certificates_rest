@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreatOrderFromOrderModelMapper implements Mapper<CreateOrderModel, Order> {
+public class CreateOrderMapper implements Mapper<CreateOrderModel, Order> {
 
     private final CreateUserFromUserModelReadMapper userMapper;
     private final CreateCertificateFromOnlyCertificateMapper certificateMapper;

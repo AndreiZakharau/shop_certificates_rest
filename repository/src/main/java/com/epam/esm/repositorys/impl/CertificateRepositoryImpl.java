@@ -58,7 +58,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     public List<Certificate> getAllCertificates(int limit, int offset) {
         Session session = manager.unwrap(Session.class);
-        return  session.createQuery("select c from Certificate c join Tag t join Order o ORDER BY c.id",Certificate.class)
+        return  session.createQuery("select c from Certificate c",Certificate.class)
                 .setMaxResults(limit)
                 .setFirstResult(offset).getResultList();
     }

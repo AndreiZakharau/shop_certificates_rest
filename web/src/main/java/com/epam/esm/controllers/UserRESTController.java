@@ -1,6 +1,8 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entitys.User;
+import com.epam.esm.models.orders.CreateOrderModel;
+import com.epam.esm.models.users.ReadUserModel;
 import com.epam.esm.models.users.UserModel;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.UserServiceImpl;
@@ -65,7 +67,7 @@ public class UserRESTController {
      */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UserModel> getUserById(@PathVariable long id) {
+    public Optional<ReadUserModel> getUserById(@PathVariable long id) {
         return userService.getEntity(id);
     }
 
@@ -101,8 +103,13 @@ public class UserRESTController {
      */
     @GetMapping("/users/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UserModel> getUserByName(@PathVariable String name) {
+    public Optional<ReadUserModel> getUserByName(@PathVariable String name) {
         return userService.getUserByName(name);
+    }
+
+    @GetMapping("users/purchase")
+    public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
+        return userService.purchaseCertificate(userId,certificateId);
     }
 
 }

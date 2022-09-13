@@ -3,7 +3,6 @@ package com.epam.esm.models.orders;
 import com.epam.esm.models.certificates.OnlyCertificate;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +15,6 @@ public class ReadOrderModel {
 
     private long id;
     List<OnlyCertificate> certificates;
-    private BigDecimal cost;
+    private double cost;
     private LocalDateTime datePurchase;
 }

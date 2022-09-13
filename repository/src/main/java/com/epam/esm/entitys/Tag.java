@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "tagName")
 @ToString(exclude = "certificates")
 @Builder
@@ -28,15 +28,15 @@ public class Tag implements Serializable {
     private List<Certificate> certificates = new ArrayList<>();
 
 
-    public Tag(Long id, String tagName) {
-        this.id = id;
-        this.tagName = tagName;
-    }
-
-    public Tag(Long id, String tagName, List<Certificate> certificates) {
-        this.id = id;
-        this.tagName = tagName;
-        this.certificates = certificates;
-    }
+//    public Tag(Long id, String tagName) {
+//        this.id = id;
+//        this.tagName = tagName;
+//    }
+//
+//    public Tag(Long id, String tagName, List<Certificate> certificates) {
+//        this.id = id;
+//        this.tagName = tagName;
+//        this.certificates = certificates;
+//    }
 
 }

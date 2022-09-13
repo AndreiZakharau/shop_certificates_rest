@@ -1,5 +1,6 @@
 package com.epam.esm.servises;
 
+import com.epam.esm.models.users.ReadUserModel;
 import com.epam.esm.models.users.UserModel;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface UserService <T> {
 
     void updateEntity(long id, T t);
 
-    Optional<UserModel> getEntity(long id);
+    Optional<ReadUserModel> getEntity(long id);
 
     void deleteEntity(long id);
 }
