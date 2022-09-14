@@ -7,6 +7,9 @@ import com.epam.esm.models.certificates.ModelCertificate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CreateCertificateFromModelCertificateMapper implements Mapper<ModelCertificate, Certificate> {
@@ -26,5 +29,23 @@ public class CreateCertificateFromModelCertificateMapper implements Mapper<Model
                 .lastUpdateDate(object.getLastUpdateDate())
                 .tags(tagMapper.buildListTags(object.getTags()))
                 .build();
+    }
+
+    public List<Certificate> buildListCertificateFromModelCertificate(List<ModelCertificate> models){
+        List<Certificate> list = new ArrayList<>();
+        for (ModelCertificate model : models){
+            Certificate certificate = Certificate.builder()
+                    .id(model.getId())
+                    .certificateName(model.getCertificateName())
+                    .description(model.getDescription())
+                    .duration(model.getDuration())
+                    .price(model.getPrice())
+                    .createDate(model.getCreateDate())
+                    .lastUpdateDate(model.getLastUpdateDate())
+                    .tags(tagMapper.buildListTags(model.getTags()))
+                    .build();
+            list.add(certificate);
+        }
+        return list;
     }
 }

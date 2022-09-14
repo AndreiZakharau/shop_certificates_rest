@@ -67,7 +67,7 @@ public class UserRESTController {
      */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ReadUserModel> getUserById(@PathVariable long id) {
+    public Optional<UserModel> getUserById(@PathVariable long id) {
         return userService.getEntity(id);
     }
 
@@ -107,6 +107,7 @@ public class UserRESTController {
         return userService.getUserByName(name);
     }
 
+    //TODO remake PostMapping
     @GetMapping("users/purchase")
     public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
         return userService.purchaseCertificate(userId,certificateId);

@@ -27,14 +27,23 @@ public class OnlyCertificateReadMapper implements Mapper<Certificate, OnlyCertif
     public List<OnlyCertificate> buildListCertificates(List<Certificate> list) {
         List<OnlyCertificate> certificates = new ArrayList<>();
         for (Certificate c : list) {
-            OnlyCertificate certificate = new OnlyCertificate();
-            certificate.setId(c.getId());
-            certificate.setCertificateName(c.getCertificateName());
-            certificate.setDescription(c.getDescription());
-            certificate.setDuration(c.getDuration());
-            certificate.setPrice(c.getPrice());
-            certificate.setCreateDate(c.getCreateDate());
-            certificate.setLastUpdateDate(c.getLastUpdateDate());
+            OnlyCertificate certificate = OnlyCertificate.builder()
+                    .id(c.getId())
+                    .certificateName(c.getCertificateName())
+                    .description(c.getDescription())
+                    .duration(c.getDuration())
+                    .price(c.getPrice())
+                    .createDate(c.getCreateDate())
+                    .lastUpdateDate(c.getLastUpdateDate())
+                    .build();
+//                    new OnlyCertificate();
+//            certificate.setId(c.getId());
+//            certificate.setCertificateName(c.getCertificateName());
+//            certificate.setDescription(c.getDescription());
+//            certificate.setDuration(c.getDuration());
+//            certificate.setPrice(c.getPrice());
+//            certificate.setCreateDate(c.getCreateDate());
+//            certificate.setLastUpdateDate(c.getLastUpdateDate());
             certificates.add(certificate);
         }
         return certificates;

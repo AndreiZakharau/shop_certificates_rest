@@ -27,14 +27,23 @@ public class CreateCertificateFromOnlyCertificateMapper implements Mapper<OnlyCe
         public List<Certificate> buildListCertificates(List<OnlyCertificate> list) {
         List<Certificate> certificates = new ArrayList<>();
         for (OnlyCertificate c : list) {
-            Certificate cm = new Certificate();
-            cm.setId(c.getId());
-            cm.setCertificateName(c.getCertificateName());
-            cm.setDescription(c.getDescription());
-            cm.setDuration(c.getDuration());
-            cm.setPrice(c.getPrice());
-            cm.setCreateDate(c.getCreateDate());
-            cm.setLastUpdateDate(c.getLastUpdateDate());
+            Certificate cm = Certificate.builder()
+                    .id(c.getId())
+                    .certificateName(c.getCertificateName())
+                    .description(c.getDescription())
+                    .duration(c.getDuration())
+                    .price(c.getPrice())
+                    .createDate(c.getCreateDate())
+                    .lastUpdateDate(c.getLastUpdateDate())
+                    .build();
+//                    new Certificate();
+//            cm.setId(c.getId());
+//            cm.setCertificateName(c.getCertificateName());
+//            cm.setDescription(c.getDescription());
+//            cm.setDuration(c.getDuration());
+//            cm.setPrice(c.getPrice());
+//            cm.setCreateDate(c.getCreateDate());
+//            cm.setLastUpdateDate(c.getLastUpdateDate());
             certificates.add(cm);
         }
         return certificates;

@@ -7,9 +7,6 @@ import com.epam.esm.models.tags.TagModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class CreateTagFromTagModelMapper implements Mapper<TagModel, Tag> {
@@ -25,15 +22,15 @@ public class CreateTagFromTagModelMapper implements Mapper<TagModel, Tag> {
                 .build();
     }
 
-        public List<Tag> buildListTag(List<TagModel> models) {
-        List<Tag> tags = new ArrayList<>();
-        for (TagModel model : models) {
-            Tag tag = new Tag();
-            tag.setId(model.getId());
-            tag.setTagName(model.getTagName());
-            tag.getCertificates();
-        }
-        return tags;
-    }
+//        public List<Tag> buildListTag(List<TagModel> models) {
+//        List<Tag> tags = new ArrayList<>();
+//        for (TagModel model : models) {
+//            Tag tag = new Tag();
+//            tag.setId(model.getId());
+//            tag.setTagName(model.getTagName());
+//            tag.getCertificates();
+//        }
+//        return tags;
+//    }
 
 }

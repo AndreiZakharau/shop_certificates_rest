@@ -3,9 +3,10 @@ package com.epam.esm.servises.impl;
 import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.Tag;
 import com.epam.esm.exceptions.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
+import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
+import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.CertificateService;
@@ -27,7 +28,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     private final CertificateValidator certificateValidator;
     private final TagRepositoryImpl tagRepository;
     private final ModelCertificateReadMapper readMapper;
-    private final CreateCertificateFromModelCertificateMapper certificateMapper;
+    private final CreateCertificateFromOnlyCertificateMapper onlyCertificateMapper;
 
     @Override
     @Transactional
@@ -53,9 +54,10 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
             System.out.println("NOT VALID!!!");//TODO бросаем исключение, что не валидно
         }
     }
+    // TODO ?????
     @Override
     @Transactional
-    public void updateEntity(long id, ModelCertificate model) {
+    public void updateEntity(long id, OnlyCertificate model) {
         Optional <Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
             model.setId(id);
@@ -75,7 +77,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
                 model.setCreateDate(c.get().getCreateDate());
             if(model.getLastUpdateDate()==null)
                 model.setLastUpdateDate(c.get().getLastUpdateDate());
-            Certificate certificate = certificateMapper.mapFrom(model);
+            Certificate certificate = onlyCertificateMapper.mapFrom(model);
 
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
@@ -114,10 +116,10 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         return repository.countAllCertificates();
     }
 
-    @Transactional
-    public List<Certificate> getAllCertificates(int limit, int offset){
-        return repository.getAllCertificates(limit,offset);
-    }
+//    @Transactional
+//    public List<Certificate> getAllCertificates(int limit, int offset){
+//        return repository.getAllCertificates(limit,offset);
+//    }
 
     @Transactional
     public void saveCertificatesTag(){
@@ -137,7 +139,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
 
     @Transactional
     public List<ModelCertificate> getCertificatesByTag(String tagName){
-        List<Certificate> list = new ArrayList<>();
+        List<Certificate> list ;
         Optional<Tag> tag = tagRepository.getTagByName(tagName);
         if(tag.isEmpty()){
             throw new NoSuchEntityException("This tag is empty!!!");
@@ -156,4 +158,14 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         return readMapper.buildListModelCertificates(list);
     }
 
+    //TODO
+    @Transactional
+    public List<ModelCertificate> getSortedCertificates(int limit, int offset,String desc) {
+        List<Certificate> list = new ArrayList<>();
+        if (!desc.equals("desc"))
+            list = repository.getAllEntity(limit, offset);
+        else
+            list = repository.getSortedCertificates(limit, offset);
+        return readMapper.buildListModelCertificates(list);
+    }
 }

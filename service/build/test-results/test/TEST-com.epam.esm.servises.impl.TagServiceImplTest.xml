@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.epam.esm.servises.impl.TagServiceImplTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2022-09-13T21:10:50" hostname="LAPTOP-61C39QV4" time="0.114">
+<testsuite name="com.epam.esm.servises.impl.TagServiceImplTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2022-09-14T16:04:48" hostname="LAPTOP-61C39QV4" time="0.212">
   <properties/>
-  <testcase name="updateEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.063"/>
-  <testcase name="deleteEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.019"/>
-  <testcase name="listOnlyTags()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.003"/>
-  <testcase name="getAllEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.002"/>
+  <testcase name="updateEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.096"/>
+  <testcase name="deleteEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.053"/>
+  <testcase name="listOnlyTags()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.005"/>
+  <testcase name="getAllEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.007"/>
   <testcase name="findById()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.006"/>
-  <testcase name="countAllTags()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.002"/>
-  <testcase name="saveEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.003"/>
+  <testcase name="countAllTags()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.004"/>
+  <testcase name="saveEntity()" classname="com.epam.esm.servises.impl.TagServiceImplTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -21,9 +21,13 @@ public class CreateTagFromOnlyTagMapper implements Mapper<OnlyTag, Tag> {
     public List<Tag> buildListTags(List<OnlyTag> onlyTags) {
         List<Tag> tags = new ArrayList<>();
         for (OnlyTag onlyTag : onlyTags) {
-            Tag tag = new Tag ();
-            tag.setId(tag.getId());
-            tag.setTagName(tag.getTagName());
+            Tag tag = Tag.builder()
+                    .id(onlyTag.getId())
+                    .tagName(onlyTag.getTagName())
+                    .build();
+//                    new Tag ();
+//            tag.setId(tag.getId());
+//            tag.setTagName(tag.getTagName());
         }
         return tags;
     }

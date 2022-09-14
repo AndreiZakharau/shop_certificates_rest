@@ -24,13 +24,13 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     @Override
     public List<User> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select u from User u ", User.class).getResultList();
+        return session.createQuery("select u from User u", User.class).getResultList();
     }
 
     @Override
     public Optional<User> getEntityById(long id) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select u from User u where u.id =:id", User.class)
+        return session.createQuery("select u from User u where u.id =:id ", User.class)
                 .setParameter("id", id)
                 .getResultList().stream().findFirst();
     }

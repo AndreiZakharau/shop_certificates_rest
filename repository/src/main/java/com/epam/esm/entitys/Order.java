@@ -32,6 +32,12 @@ public class Order implements Serializable {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "certificate_id"))
     private List<Certificate> certificates = new ArrayList<>();
+
+    public void addCertificate(Certificate certificate) {
+        certificates.add(certificate);
+        certificate.getOrders().add(this);
+    }
+
     private double cost;
     @Column(name = "date_purchase")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

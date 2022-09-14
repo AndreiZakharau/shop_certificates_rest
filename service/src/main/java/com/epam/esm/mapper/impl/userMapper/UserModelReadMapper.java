@@ -5,9 +5,6 @@ import com.epam.esm.mapper.Mapper;
 import com.epam.esm.models.users.ReadUserModel;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class UserModelReadMapper implements Mapper<User, ReadUserModel> {
 
@@ -19,14 +16,18 @@ public class UserModelReadMapper implements Mapper<User, ReadUserModel> {
         );
     }
 
-    public List<ReadUserModel> buildReadUserModel(List<User> users){
-        List<ReadUserModel> list = new ArrayList<>();
-        for (User user : users){
-            ReadUserModel readUserModel = new ReadUserModel();
-            readUserModel.setId(user.getId());
-            readUserModel.setNickName(user.getNickName());
-            list.add(readUserModel);
-        }
-        return list;
-    }
+//    public List<ReadUserModel> buildReadUserModel(List<User> users){
+//        List<ReadUserModel> list = new ArrayList<>();
+//        for (User user : users){
+//            ReadUserModel readUserModel = ReadUserModel.builder()
+//                    .id(user.getId())
+//                    .nickName(user.getNickName())
+//                    .build();
+//                    new ReadUserModel();
+//            readUserModel.setId(user.getId());
+//            readUserModel.setNickName(user.getNickName());
+//            list.add(readUserModel);
+//        }
+//        return list;
+//    }
 }

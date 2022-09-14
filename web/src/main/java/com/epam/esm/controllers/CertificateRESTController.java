@@ -4,6 +4,7 @@ import com.epam.esm.entitys.Certificate;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
+import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -84,9 +85,9 @@ public class CertificateRESTController {
      */
     @PatchMapping ("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Certificate updateCertificate(@RequestBody ModelCertificate certificate, @PathVariable long id){
+    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id){
         service.updateEntity(id,certificate);
-        return modelCertificateMapper.mapFrom(certificate);
+        return certificateMapper.mapFrom(certificate);
     }
 
     /**
@@ -123,34 +124,30 @@ public class CertificateRESTController {
     }
 
 
-//    @GetMapping("/all")
-//    public CollectionModel<Certificate> getAllCertificates(@RequestParam("page") int page,
-//                                                                  @RequestParam("size") int size) {
-//        int offset = Pagination.offset(page, size);
-//        int totalRecords = service.countAllCertificates();
-//        int pages = Pagination.findPages(totalRecords, size);
-//        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-//        Link prevLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findPrevPage(page), size))
-//                .withRel("prev");
-//        Link nextLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findNextPage(page, lastPage), size))
-//                .withRel("next");
-//        List<Certificate> certificates = service.getAllCertificates(size, offset);
-//        return CollectionModel.of(certificates, prevLink, nextLink);
-//    }
-
+      //TODO remake
 //    /**
 //     * Sort the list of certificates by date, by name.
 //     * to create, enter the asc field for
 //     *  - dates, in the -  box for the name
 //     *  enter "ASC" or "DESC"
-//     * @param asc string "ASC"
 //     * @param desc string "DESC"
 //     * @return certificates
 //     */
-//    @GetMapping("/certificates/sorted")
+//    @GetMapping("/certificates/sorted/{desc}")
 //    @ResponseStatus(HttpStatus.OK)
-//    public List<Certificate> getSortedCertificates(@RequestParam String asc, @RequestParam String desc) {
-//        return service.getSortedCertificates(asc,desc);
+//    public CollectionModel<ModelCertificate> getSortedCertificates(@RequestParam("page") int page,
+//                                                                   @RequestParam("size") int size,
+//                                                                   @PathVariable String desc) {
+//        int offset = Pagination.offset(page, size);
+//        int totalRecords = service.countAllCertificates();
+//        int pages = Pagination.findPages(totalRecords, size);
+//        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
+//        Link prevLink = linkTo(methodOn(CertificateRESTController.class).getSortedCertificates(Pagination.findPrevPage(page), size))
+//                .withRel("prev");
+//        Link nextLink = linkTo(methodOn(CertificateRESTController.class).getSortedCertificates(Pagination.findNextPage(page, lastPage), size))
+//                .withRel("next");
+//        List<ModelCertificate> models = service.getSortedCertificates(size, offset,desc);
+//        return CollectionModel.of(models, prevLink, nextLink);
 //    }
 
 }

@@ -88,14 +88,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 .list();
     }
 
-    public List<Certificate> getAllCertificatesAndTags(int limit, int offset) {
-        Session session = manager.getCurrentSession();
-        return session.createQuery("select c from Certificate c " +
-                        "join c.tags t group by t.tagName", Certificate.class)
-                .setMaxResults(limit)
-                .setFirstResult(offset)
-                .getResultList();
-    }
 
     public int countAllCertificates() {
         Session session = manager.getCurrentSession();
@@ -106,6 +98,14 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         return session.createQuery(criteriaQuery).uniqueResult().intValue();
 
     }
+
+     public List<Certificate> getSortedCertificates(int limit, int offset){
+         Session session = manager.getCurrentSession();
+        return session.createQuery("select c from Certificate c order by c.id desc ",Certificate.class)
+                .setMaxResults(limit)
+                .setMaxResults(offset)
+                .getResultList();
+     }
 }
 
 

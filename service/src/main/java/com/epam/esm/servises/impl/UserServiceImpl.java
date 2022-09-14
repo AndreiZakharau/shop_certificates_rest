@@ -69,12 +69,12 @@ public class UserServiceImpl implements UserService<User> {
 
     @Transactional
     @Override
-    public Optional<ReadUserModel> getEntity(long id) {
+    public Optional<UserModel> getEntity(long id) {
         Optional<User> user = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
         if(user.isEmpty()) {
             throw new NoSuchEntityException("message.user.with.id");
         }
-        return user.map(modelReadMapper::mapFrom);
+        return user.map(readMapper::mapFrom);
     }
 
     @Transactional
@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService<User> {
     }
 
 
+    //TODO remake
     @Transactional
     public CreateOrderModel purchaseCertificate(long userId, long certificateId) {
         CreateOrderModel model = new CreateOrderModel();
