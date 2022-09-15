@@ -37,20 +37,12 @@ public class ModelCertificateReadMapper implements Mapper<Certificate, ModelCert
                     .id(certificate.getId())
                     .certificateName(certificate.getCertificateName())
                     .description(certificate.getDescription())
+                    .price(certificate.getPrice())
                     .duration(certificate.getDuration())
                     .createDate(certificate.getCreateDate())
                     .lastUpdateDate(certificate.getLastUpdateDate())
                     .tags(tagReadMapper.buildListOnlyTag(certificate.getTags()))
                     .build();
-//                    new ModelCertificate();
-//            model.setId(certificate.getId());
-//            model.setCertificateName(certificate.getCertificateName());
-//            model.setDescription(certificate.getDescription());
-//            model.setDuration(certificate.getDuration());
-//            model.setPrice(certificate.getPrice());
-//            model.setCreateDate(certificate.getCreateDate());
-//            model.setLastUpdateDate(certificate.getLastUpdateDate());
-//            model.setTags(tagReadMapper.buildListOnlyTag(certificate.getTags()));
             list.add(model);
         }
         return list;

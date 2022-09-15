@@ -107,8 +107,12 @@ public class UserRESTController {
         return userService.getUserByName(name);
     }
 
-    //TODO remake PostMapping
-    @GetMapping("users/purchase")
+    /**
+     * @param userId the userID
+     * @param certificateId the CertificateId
+     * @return OrderModel
+     */
+    @PostMapping("users/purchase")
     public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
         return userService.purchaseCertificate(userId,certificateId);
     }

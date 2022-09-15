@@ -3,10 +3,10 @@ package com.epam.esm.servises.impl;
 import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.Tag;
 import com.epam.esm.exceptions.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
+import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
+import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
-import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.CertificateService;
@@ -27,8 +27,9 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     private final CertificateRepositoryImpl repository;
     private final CertificateValidator certificateValidator;
     private final TagRepositoryImpl tagRepository;
+    private final OnlyTagReadMapper tagReadMapper;
     private final ModelCertificateReadMapper readMapper;
-    private final CreateCertificateFromOnlyCertificateMapper onlyCertificateMapper;
+    private final CreateCertificateFromModelCertificateMapper certificateMapper;
 
     @Override
     @Transactional
@@ -54,10 +55,10 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
             System.out.println("NOT VALID!!!");//TODO бросаем исключение, что не валидно
         }
     }
-    // TODO ?????
+
     @Override
     @Transactional
-    public void updateEntity(long id, OnlyCertificate model) {
+    public void updateEntity(long id, ModelCertificate model) {
         Optional <Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
             model.setId(id);
@@ -77,7 +78,10 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
                 model.setCreateDate(c.get().getCreateDate());
             if(model.getLastUpdateDate()==null)
                 model.setLastUpdateDate(c.get().getLastUpdateDate());
-            Certificate certificate = onlyCertificateMapper.mapFrom(model);
+            if(model.getTags()==null)
+                model.setTags(tagReadMapper.buildListOnlyTag(c.get().getTags()));
+            Certificate certificate = certificateMapper.mapFrom(model);
+
 
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
@@ -116,10 +120,6 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         return repository.countAllCertificates();
     }
 
-//    @Transactional
-//    public List<Certificate> getAllCertificates(int limit, int offset){
-//        return repository.getAllCertificates(limit,offset);
-//    }
 
     @Transactional
     public void saveCertificatesTag(){

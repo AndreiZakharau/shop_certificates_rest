@@ -4,7 +4,6 @@ import com.epam.esm.entitys.Certificate;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
-import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,7 @@ public class CertificateRESTController {
      * created certificate
      * enter the following fields: name,description,duration,price
      * dates computed automatically
-     * @param certificate the cer
-     *                    tificate
+     * @param certificate the certificate
      * @return new certificate
      */
     @PostMapping("/certificates")
@@ -85,9 +83,9 @@ public class CertificateRESTController {
      */
     @PatchMapping ("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id){
+    public Certificate updateCertificate(@RequestBody ModelCertificate certificate, @PathVariable long id){
         service.updateEntity(id,certificate);
-        return certificateMapper.mapFrom(certificate);
+        return modelCertificateMapper.mapFrom(certificate);
     }
 
     /**

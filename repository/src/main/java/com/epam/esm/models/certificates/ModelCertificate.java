@@ -11,9 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString(exclude = "tags")
-//@EqualsAndHashCode(of = {"certificateName","description"})
-// extends RepresentationModel<ModelCertificateWithTags> если понадобится links
 public class ModelCertificate {
 
     private long id;

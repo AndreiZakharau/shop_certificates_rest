@@ -12,13 +12,13 @@ public class OrderRepositoryImpl {
     @Autowired
     private SessionFactory manager;
 
-    public void saveOrderCertificates(long o, long c){
-        Session session = manager.getCurrentSession();
-        session.createNativeQuery("INSERT INTO orders_certificates VALUES(?, ?)")
-                .setParameter(1, o)
-                .setParameter(2, c)
-                .executeUpdate();
-    }
+//    public void saveOrderCertificates(long o, long c){
+//        Session session = manager.getCurrentSession();
+//        session.createNativeQuery("INSERT INTO orders_certificates VALUES(?, ?)")
+//                .setParameter(1, o)
+//                .setParameter(2, c)
+//                .executeUpdate();
+//    }
 
     public Order saveOrder(Order order){
         Session session = manager.getCurrentSession();
