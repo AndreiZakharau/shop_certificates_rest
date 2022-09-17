@@ -4,7 +4,6 @@ import com.epam.esm.entitys.Tag;
 import com.epam.esm.exceptions.IncorrectDataException;
 import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
-import com.epam.esm.mapper.impl.tagMapper.CreateTagFromTagModelMapper;
 import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
 import com.epam.esm.models.tags.OnlyTag;
 import com.epam.esm.models.tags.TagModel;
@@ -26,7 +25,6 @@ public class TagServiceImpl implements TagService<TagModel> {
     private final TagRepositoryImpl repository;
     private final TagsValidator tagsValidator;
     private final CertificateServiceImpl certificateServiceImpl;
-    private final CreateTagFromTagModelMapper createTagFromTagModelMapper;
     private final TagModelReadMapper readMapper;
     private final OnlyTagReadMapper onlyTagReadMapper;
 
@@ -53,9 +51,9 @@ public class TagServiceImpl implements TagService<TagModel> {
     public void updateEntity(long id, TagModel tagModel){
         Optional<Tag> tag = repository.getEntityById(id);
         if (tag.isPresent()){
-            tagModel.setId(tagModel.getId());
+            tagModel.setTagName(tagModel.getTagName());
            if (tagsValidator.isValidModel(tagModel)){
-              repository.updateEntity(createTagFromTagModelMapper.mapFrom(tagModel));
+              repository.updateEntity(tag.get());
            }else{
                 throw new IncorrectDataException("message.not.valid");
            }

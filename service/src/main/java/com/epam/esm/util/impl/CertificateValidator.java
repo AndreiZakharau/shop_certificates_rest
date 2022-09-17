@@ -1,13 +1,10 @@
 package com.epam.esm.util.impl;
 
 import com.epam.esm.entitys.Certificate;
-import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service("certificateValidator")
 public class CertificateValidator implements Validator<Certificate> {
@@ -64,11 +61,4 @@ public class CertificateValidator implements Validator<Certificate> {
             return result;
     }
 
-    public Optional<Certificate> isPresentCertificate(long id){
-        Optional<Certificate> certificate = certificateRepository.getEntityById(id);
-        if(certificate.isEmpty()){
-            throw new NoSuchEntityException("такого сертификата нет");
-        }
-        return certificate;
-    }
 }

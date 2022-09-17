@@ -4,6 +4,7 @@ import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.User;
 import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
+import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateInOnlyCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
 import com.epam.esm.mapper.impl.certificateMapper.OnlyCertificateReadMapper;
 import com.epam.esm.mapper.impl.orderMapper.CreateOrderMapper;
@@ -16,7 +17,6 @@ import com.epam.esm.models.users.UserModel;
 import com.epam.esm.repositorys.impl.OrderRepositoryImpl;
 import com.epam.esm.repositorys.impl.UserRepositoryImpl;
 import com.epam.esm.servises.UserService;
-import com.epam.esm.util.impl.CertificateValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService<User> {
     private final ModelCertificateReadMapper modelCertificateReadMapper;
     private final OnlyCertificateReadMapper onlyCertificateReadMapper;
     private final OrderRepositoryImpl orderRepository;
-    private final CertificateValidator certificateValidator;
+    private final ModelCertificateInOnlyCertificateMapper onlyCertificateMapper;
 
     @Transactional
     @Override
@@ -107,47 +107,22 @@ public class UserServiceImpl implements UserService<User> {
     @Transactional
     public CreateOrderModel purchaseCertificate(long userId, long certificateId) {
 
-        Optional<Certificate> certificate = certificateValidator.isPresentCertificate(certificateId);
-        ModelCertificate modelCertificate = modelCertificateReadMapper.mapFrom(certificate.orElseThrow());
-        modelCertificate.setCreateDate(LocalDateTime.now());
-        certificateService.updateEntity(certificateId,modelCertificate);
+        Optional<ModelCertificate> certificate = certificateService.getEntity(certificateId);
+        certificate.get().setCreateDate(LocalDateTime.now());
+        certificateService.updateEntity(certificateId,(onlyCertificateMapper.mapFrom(certificate.get())));
         Optional<User> user = Optional.ofNullable(repository.getEntityById(userId)).orElseThrow();
         List<Certificate> list = new ArrayList<>();
-        Certificate updateCertificate = certificateValidator.isPresentCertificate(certificateId).orElseThrow();
-        list.add(updateCertificate);
+        Optional<ModelCertificate> updateCertificate = certificateService.getEntity(certificateId);
+        list.add(certificateMapper.mapFrom(updateCertificate.get()));
         CreateOrderModel model = CreateOrderModel.builder()
                 .user(user.map(modelReadMapper::mapFrom).orElseThrow())
                 .certificate(onlyCertificateReadMapper.buildListCertificates(list)).build();
             model.setUser((user.map(modelReadMapper::mapFrom).orElseThrow()));
             model.setCertificate(onlyCertificateReadMapper.buildListCertificates(list));
-            model.setCost(updateCertificate.getPrice());
+            model.setCost(updateCertificate.get().getPrice());
             model.setDatePurchase(LocalDateTime.now());
             orderRepository.saveOrder(orderMapper.mapFrom(model));
-//        CreateOrderModel model = new CreateOrderModel();
-//        if (certificateValidator.isPresentCertificate(certificateId))
-//        Optional<ModelCertificate> modelCertificate =
-//                Optional.ofNullable(certificateService.getEntity(certificateId)).orElseThrow();
-//        Certificate certificate = modelCertificate.map(certificateMapper::mapFrom).orElseThrow();
-//        certificate = certificateService.updateEntity(certificateId,modelCertificate);
-//        List<Certificate> list = new ArrayList<>();
-//        list.add(certificate);
-//        Optional<User> user = Optional.ofNullable(repository.getEntityById(userId)).orElseThrow();
-//        if(modelCertificate.isEmpty()) {
-//            throw new NoSuchEntityException("такой сертификат не найден");
-//        }else {
-//            repository.addCertificate(certificate);
-//            List<Certificate> list = new ArrayList<>();
-//            list.add(certificate);
-//        CreateOrderModel model = CreateOrderModel.builder()
-//                .user(user.map(modelReadMapper::mapFrom).orElseThrow())
-//                .certificate(onlyCertificateReadMapper.buildListCertificates(list)).build();
-//            model.setUser((user.map(modelReadMapper::mapFrom).orElseThrow()));
-//            model.setCertificate(onlyCertificateReadMapper.buildListCertificates(list));
-//            model.setCost(certificate.getPrice());
-//            model.setDatePurchase(LocalDateTime.now());
-//            Order order = orderRepository.saveOrder(orderMapper.mapFrom(model));
-//            orderRepository.saveOrderCertificates(order.getId(),certificate.getId());
-//        }
+
         return model;
     }
 }

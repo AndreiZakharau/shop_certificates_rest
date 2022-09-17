@@ -56,12 +56,12 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         session.merge(certificate);
     }
 
-    public List<Certificate> getAllCertificates(int limit, int offset) {
-        Session session = manager.unwrap(Session.class);
-        return  session.createQuery("select c from Certificate c",Certificate.class)
-                .setMaxResults(limit)
-                .setFirstResult(offset).getResultList();
-    }
+//    public List<Certificate> getAllCertificates(int limit, int offset) {
+//        Session session = manager.unwrap(Session.class);
+//        return  session.createQuery("select c from Certificate c",Certificate.class)
+//                .setMaxResults(limit)
+//                .setFirstResult(offset).getResultList();
+//    }
 
     public void saveCertificatesTag(long c, long t) {
         Session session = manager.getCurrentSession();
@@ -99,13 +99,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     }
 
-     public List<Certificate> getSortedCertificates(int limit, int offset){
-         Session session = manager.getCurrentSession();
-        return session.createQuery("select c from Certificate c order by c.id desc ",Certificate.class)
-                .setMaxResults(limit)
-                .setMaxResults(offset)
-                .getResultList();
-     }
 }
 
 

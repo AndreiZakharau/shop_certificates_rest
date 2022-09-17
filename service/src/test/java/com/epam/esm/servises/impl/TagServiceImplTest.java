@@ -2,7 +2,6 @@ package com.epam.esm.servises.impl;
 
 
 import com.epam.esm.entitys.Tag;
-import com.epam.esm.mapper.impl.tagMapper.CreateTagFromTagModelMapper;
 import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
 import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
 import com.epam.esm.models.tags.TagModel;
@@ -25,7 +24,6 @@ class TagServiceImplTest {
     private final TagRepositoryImpl mockTagRepositoryImpl = Mockito.mock(TagRepositoryImpl.class);
     private final TagsValidator mockTagValid = Mockito.mock(TagsValidator.class);
     private final CertificateServiceImpl mockCertificateServiceImpl = Mockito.mock(CertificateServiceImpl.class);
-    private final CreateTagFromTagModelMapper mockCreateTag = Mockito.mock(CreateTagFromTagModelMapper.class);
     private final TagModelReadMapper mockTagModel = Mockito.mock(TagModelReadMapper.class);
     private final OnlyTagReadMapper mockOnlyTag = Mockito.mock(OnlyTagReadMapper.class);
 
@@ -41,7 +39,7 @@ class TagServiceImplTest {
 
     @BeforeEach
     public void setMoc(){
-        tagServiceImpl = new TagServiceImpl(mockTagRepositoryImpl,mockTagValid, mockCertificateServiceImpl,mockCreateTag,mockTagModel,mockOnlyTag);
+        tagServiceImpl = new TagServiceImpl(mockTagRepositoryImpl,mockTagValid, mockCertificateServiceImpl,mockTagModel,mockOnlyTag);
     }
 
     @AfterEach

@@ -4,6 +4,7 @@ import com.epam.esm.entitys.Certificate;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
+import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -83,9 +84,9 @@ public class CertificateRESTController {
      */
     @PatchMapping ("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Certificate updateCertificate(@RequestBody ModelCertificate certificate, @PathVariable long id){
+    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id){
         service.updateEntity(id,certificate);
-        return modelCertificateMapper.mapFrom(certificate);
+        return certificateMapper.mapFrom(certificate);
     }
 
     /**

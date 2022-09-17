@@ -3,10 +3,10 @@ package com.epam.esm.servises.impl;
 import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.Tag;
 import com.epam.esm.exceptions.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
+import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
-import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
+import com.epam.esm.models.certificates.OnlyCertificate;
 import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.CertificateService;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +26,8 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     private final CertificateRepositoryImpl repository;
     private final CertificateValidator certificateValidator;
     private final TagRepositoryImpl tagRepository;
-    private final OnlyTagReadMapper tagReadMapper;
     private final ModelCertificateReadMapper readMapper;
-    private final CreateCertificateFromModelCertificateMapper certificateMapper;
+    private final CreateCertificateFromOnlyCertificateMapper certificateMapper;
 
     @Override
     @Transactional
@@ -58,29 +56,27 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
 
     @Override
     @Transactional
-    public void updateEntity(long id, ModelCertificate model) {
+    public void updateEntity(long id, OnlyCertificate onlyCertificate) {
         Optional <Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
-            model.setId(id);
-            if(model.getCertificateName() == null)
-                model.setCertificateName(c.get().getCertificateName());
-            if(model.getDescription()== null)
-                model.setDescription(c.get().getDescription());
-            if(model.getPrice() <= 0)
-                model.setPrice(c.get().getPrice());
-            if(model.getDuration()<=0) {
-                model.setDuration(c.get().getDuration());
-                model.setLastUpdateDate(LocalDateTime.now().plusDays(c.get().getDuration()));
+            onlyCertificate.setId(id);
+            if(onlyCertificate.getCertificateName() == null)
+                onlyCertificate.setCertificateName(c.get().getCertificateName());
+            if(onlyCertificate.getDescription()== null)
+                onlyCertificate.setDescription(c.get().getDescription());
+            if(onlyCertificate.getPrice() <= 0)
+                onlyCertificate.setPrice(c.get().getPrice());
+            if(onlyCertificate.getDuration()<=0) {
+                onlyCertificate.setDuration(c.get().getDuration());
+                onlyCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(c.get().getDuration()));
             }else{
-                model.setLastUpdateDate(LocalDateTime.now().plusDays(model.getDuration()));
+                onlyCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(onlyCertificate.getDuration()));
             }
-            if(model.getCreateDate()==null)
-                model.setCreateDate(c.get().getCreateDate());
-            if(model.getLastUpdateDate()==null)
-                model.setLastUpdateDate(c.get().getLastUpdateDate());
-            if(model.getTags()==null)
-                model.setTags(tagReadMapper.buildListOnlyTag(c.get().getTags()));
-            Certificate certificate = certificateMapper.mapFrom(model);
+            if(onlyCertificate.getCreateDate()==null)
+                onlyCertificate.setCreateDate(c.get().getCreateDate());
+            if(onlyCertificate.getLastUpdateDate()==null)
+                onlyCertificate.setLastUpdateDate(c.get().getLastUpdateDate());
+            Certificate certificate = certificateMapper.mapFrom(onlyCertificate);
 
 
             if (certificateValidator.isValid(certificate)) {
@@ -158,14 +154,4 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         return readMapper.buildListModelCertificates(list);
     }
 
-    //TODO
-    @Transactional
-    public List<ModelCertificate> getSortedCertificates(int limit, int offset,String desc) {
-        List<Certificate> list = new ArrayList<>();
-        if (!desc.equals("desc"))
-            list = repository.getAllEntity(limit, offset);
-        else
-            list = repository.getSortedCertificates(limit, offset);
-        return readMapper.buildListModelCertificates(list);
-    }
 }
