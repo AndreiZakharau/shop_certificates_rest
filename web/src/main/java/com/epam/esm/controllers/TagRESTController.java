@@ -115,4 +115,9 @@ public class TagRESTController {
 
     }
 
+    @GetMapping("/tags/popular")
+    public OnlyTag getPopularTagWithUser(){
+        return service.getPopularTagWithUser();
+    }
+
 }

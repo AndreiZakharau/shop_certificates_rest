@@ -53,7 +53,8 @@ class CertificateServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        certificateServiceImpl = new CertificateServiceImpl(mockRepository,mockValidator,mockTag,mockCertificateReadMapper,mockCertificateMapper);
+        certificateServiceImpl = new CertificateServiceImpl(mockRepository,mockValidator,mockTag,
+                mockCertificateReadMapper,mockCertificateMapper);
     }
 
     @AfterEach
@@ -89,7 +90,7 @@ class CertificateServiceImplTest {
         Assertions.assertEquals(certificate.getCertificateName(), "free tea");
         String name = "sale 50%";
         certificate.setCertificateName(name);
-        Mockito.doNothing().when(mockRepository).addEntity(certificate);
+        Mockito.doNothing().when(mockRepository).updateEntity(certificate);
         certificateServiceImpl.updateEntity(7L,mockOnlyCertificateReadMapper.mapFrom(certificate));
         Assertions.assertEquals(certificate.getCertificateName(), name);
     }

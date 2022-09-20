@@ -93,4 +93,13 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
 
     };
 
+    public Tag getPopularTagWithUser(){
+        Session session = manager.getCurrentSession();
+        Tag tag = session.createQuery("select t from Tag t join t.certificates c join c.orders o join o.user " +
+                " group by t.id " +
+                "having max (o.cost)",Tag.class).uniqueResult();
+        System.out.println(tag.getTagName());
+        return tag;
+    }
+
 }

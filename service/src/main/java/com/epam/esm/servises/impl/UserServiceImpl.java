@@ -5,7 +5,6 @@ import com.epam.esm.entitys.User;
 import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateInOnlyCertificateMapper;
-import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
 import com.epam.esm.mapper.impl.certificateMapper.OnlyCertificateReadMapper;
 import com.epam.esm.mapper.impl.orderMapper.CreateOrderMapper;
 import com.epam.esm.mapper.impl.userMapper.CreateUserModelMapper;
@@ -37,7 +36,6 @@ public class UserServiceImpl implements UserService<User> {
     private final CertificateServiceImpl certificateService;
     private final CreateOrderMapper orderMapper;
     private final CreateCertificateFromModelCertificateMapper certificateMapper;
-    private final ModelCertificateReadMapper modelCertificateReadMapper;
     private final OnlyCertificateReadMapper onlyCertificateReadMapper;
     private final OrderRepositoryImpl orderRepository;
     private final ModelCertificateInOnlyCertificateMapper onlyCertificateMapper;

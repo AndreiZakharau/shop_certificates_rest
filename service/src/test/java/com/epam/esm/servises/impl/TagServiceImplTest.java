@@ -115,4 +115,8 @@ class TagServiceImplTest {
         Mockito.verify(mockTagRepositoryImpl).countAllTags();
         Assertions.assertEquals(counts,2);
     }
+
+    @Test
+    void getPopularTagWithUser() {
+    }
 }

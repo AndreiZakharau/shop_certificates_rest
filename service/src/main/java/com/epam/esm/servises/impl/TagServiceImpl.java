@@ -97,6 +97,11 @@ public class TagServiceImpl implements TagService<TagModel> {
         }
     }
 
+    @Transactional
+    public OnlyTag getPopularTagWithUser(){
+        return onlyTagReadMapper.mapFrom(repository.getPopularTagWithUser());
+    }
+
     
 
 

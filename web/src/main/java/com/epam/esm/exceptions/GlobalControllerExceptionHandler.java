@@ -22,9 +22,9 @@ public class GlobalControllerExceptionHandler {
     private  ReloadableResourceBundleMessageSource bundleMessageSource;
 
 
-//    public GlobalControllerExceptionHandler(ReloadableResourceBundleMessageSource bundleMessageSource) {
-//        this.bundleMessageSource = bundleMessageSource;
-//    }
+    public GlobalControllerExceptionHandler(ReloadableResourceBundleMessageSource bundleMessageSource) {
+        this.bundleMessageSource = bundleMessageSource;
+    }
 
     private ResponseEntity<ModelException> buildResponse(String info, int code,
                                                          HttpStatus status) {
