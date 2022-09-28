@@ -56,12 +56,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         session.merge(certificate);
     }
 
-//    public List<Certificate> getAllCertificates(int limit, int offset) {
-//        Session session = manager.unwrap(Session.class);
-//        return  session.createQuery("select c from Certificate c",Certificate.class)
-//                .setMaxResults(limit)
-//                .setFirstResult(offset).getResultList();
-//    }
 
     public void saveCertificatesTag(long c, long t) {
         Session session = manager.getCurrentSession();
@@ -88,7 +82,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 .list();
     }
 
-
     public int countAllCertificates() {
         Session session = manager.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -99,6 +92,23 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     }
 
+    public List<Certificate> getCertificatesByTags(long id1, long id2) {
+        Session session = manager.getCurrentSession();
+        return session.createQuery( "select c from Certificate c " +
+                        "join c.tags t " +
+                        "where t.id =:id1 and t.id =:id2 ", Certificate.class)
+//        return session.createNativeQuery("select c.id from gift_certificate as c " +
+//                        "join certificates_tag as ct on ct.certificate_id = c.id " +
+//                        "join tags as t on t.id = ct.tag_id " +
+//                        "where t.id in (t.id =:id1, t.id =:id2) " +
+//                        "group by c.certificate_name", Certificate.class)
+                .setParameter("id1", id1)
+                .setParameter("id2", id2)
+                .list();
+
+    }
+
 }
+
 
 

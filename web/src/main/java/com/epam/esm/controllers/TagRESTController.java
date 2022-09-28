@@ -90,7 +90,8 @@ public class TagRESTController {
     @ResponseStatus(HttpStatus.OK)
     public String deleteTag(@PathVariable long id) {
         service.deleteEntity(id);
-        return "Tag with ID = " + id + " was deleted.";
+//        return "Tag with ID = " + id + " was deleted.";
+        return "message.delete.tag";
     }
 
     /**
@@ -115,6 +116,11 @@ public class TagRESTController {
 
     }
 
+
+    /**
+     * @return the popular tag from the user
+     * with the maximum sum of all orders
+     */
     @GetMapping("/tags/popular")
     public OnlyTag getPopularTagWithUser(){
         return service.getPopularTagWithUser();

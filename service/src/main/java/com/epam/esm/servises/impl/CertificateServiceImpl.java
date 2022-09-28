@@ -2,6 +2,7 @@ package com.epam.esm.servises.impl;
 
 import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.Tag;
+import com.epam.esm.exceptions.IncorrectDataException;
 import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
@@ -11,6 +12,7 @@ import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.CertificateService;
 import com.epam.esm.util.impl.CertificateValidator;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     private final TagRepositoryImpl tagRepository;
     private final ModelCertificateReadMapper readMapper;
     private final CreateCertificateFromOnlyCertificateMapper certificateMapper;
+    private final LanguageMassage languageMassage;
 
     @Override
     @Transactional
@@ -50,7 +53,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
             repository.addEntity(certificate);
             saveCertificatesTag();
         }else{
-            System.out.println("NOT VALID!!!");//TODO бросаем исключение, что не валидно
+            throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
         }
     }
 
@@ -81,11 +84,12 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
 
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
+                saveCertificatesTag();
             }else{
-                //TODO бросаем исключение, что не валидно
+                throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
             }
         }else{
-           // TODO (бросить исключение, что токого id нет)
+           throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
     }
 
@@ -94,7 +98,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     public Optional<ModelCertificate> getEntity(long id) {
         Optional<Certificate> c = repository.getEntityById(id);
         if(c.isEmpty()) {
-            // TODO (бросить исключение, что токого id нет)
+            throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
             return c.map(readMapper::mapFrom);
     }
@@ -106,7 +110,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         if (c.isPresent()) {
             repository.deleteEntity(c.get());
         }else {
-            //TODO (бросить исключение, что токого id нет)
+            throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
     }
 
@@ -138,9 +142,9 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         List<Certificate> list ;
         Optional<Tag> tag = tagRepository.getTagByName(tagName);
         if(tag.isEmpty()){
-            throw new NoSuchEntityException("This tag is empty!!!");
+            throw new NoSuchEntityException(languageMassage.getMessage("message.be.empty"));
         }else {
-            list = repository.getCertificatesByName(tagName); //TODO переделать оьвет
+            list = repository.getCertificatesByName(tagName);
         }
         return readMapper.buildListModelCertificates(list);
     }
@@ -149,9 +153,19 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     public List<ModelCertificate> getCertificateByName(String name) {
         List<Certificate> list = repository.getCertificatesByName(name);
         if (list.isEmpty()) {
-            //TODO С таким именем сертиыикаты не найдены
+            throw  new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
         }
         return readMapper.buildListModelCertificates(list);
     }
 
+    @Transactional
+    public List<ModelCertificate> getCertificatesByTags(String tagName1, String tagName2) {
+        Optional<Tag> tag1 = tagRepository.getTagByName(tagName1);
+        Optional<Tag> tag2 = tagRepository.getTagByName(tagName2);
+        if (tag1.isEmpty() || tag2.isEmpty()) {
+            throw  new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
+        }
+
+        return readMapper.buildListModelCertificates(repository.getCertificatesByTags(tag1.get().getId(),tag2.get().getId()));
+    }
 }

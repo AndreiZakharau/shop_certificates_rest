@@ -10,6 +10,7 @@ import com.epam.esm.models.tags.TagModel;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.servises.TagService;
 import com.epam.esm.util.impl.TagsValidator;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class TagServiceImpl implements TagService<TagModel> {
     private final CertificateServiceImpl certificateServiceImpl;
     private final TagModelReadMapper readMapper;
     private final OnlyTagReadMapper onlyTagReadMapper;
+    private final LanguageMassage languageMassage;
 
 
     @Transactional
@@ -55,7 +57,7 @@ public class TagServiceImpl implements TagService<TagModel> {
            if (tagsValidator.isValidModel(tagModel)){
               repository.updateEntity(tag.get());
            }else{
-                throw new IncorrectDataException("message.not.valid");
+                throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
            }
         }else {
             return ; //TODO (бросить исключение, что токого id нет)
@@ -82,7 +84,7 @@ public class TagServiceImpl implements TagService<TagModel> {
     public Optional<TagModel> findById(long id) {
         Optional<Tag> tag = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
         if(tag.isEmpty()){
-            throw new NoSuchEntityException("message.tag.with.id");
+            throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
         }
         return tag.map(readMapper::mapFrom);
     }
@@ -93,8 +95,8 @@ public class TagServiceImpl implements TagService<TagModel> {
         if(repository.getEntityById(id).isPresent()){
             repository.deleteEntity(id);
         }else {
-                    throw new NoSuchEntityException("message.tag.with.id");
-        }
+                    throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
+       }
     }
 
     @Transactional

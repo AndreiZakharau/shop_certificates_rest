@@ -1,23 +1,17 @@
 package com.epam.esm.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
@@ -31,23 +25,23 @@ public class MyConfig {
     private Environment environment;
 
 
-    @Bean(name = "messageSource")
-    public MessageSource getMessageSource() {
-        ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-        ret.setBasename("classpath:locale/message");
-        ret.setCacheSeconds(1);
-        ret.setUseCodeAsDefaultMessage(true);
-        ret.setDefaultEncoding("utf-8");
-        return ret;
-    }
-
-    @Bean(name = "localeResolver")
-    public LocaleResolver localeResolver() {
-        final AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-        resolver.setSupportedLocales(Arrays.asList(new Locale("en_US"), new Locale("ru_RU")));
-        resolver.setDefaultLocale(Locale.ENGLISH);
-        return resolver;
-    }
+//    @Bean(name = "messageSource")
+//    public MessageSource getMessageSource() {
+//        ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
+//        ret.setBasename("classpath:locale/message.properties");
+//        ret.setCacheSeconds(1);
+//        ret.setUseCodeAsDefaultMessage(true);
+//        ret.setDefaultEncoding("utf-8");
+//        return ret;
+//    }
+//
+//    @Bean(name = "localeResolver")
+//    public LocaleResolver localeResolver() {
+//        final AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
+//        resolver.setSupportedLocales(Arrays.asList(new Locale("en_US"), new Locale("ru_RU")));
+//        resolver.setDefaultLocale(Locale.ENGLISH);
+//        return resolver;
+//    }
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -93,5 +87,7 @@ public class MyConfig {
 
         return properties;
     }
+
+
 
 }

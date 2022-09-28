@@ -9,17 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Locale;
 
-@ControllerAdvice()
+@RestControllerAdvice()
+//@RequiredArgsConstructor
 public class GlobalControllerExceptionHandler {
 
     @Autowired
-    private  ReloadableResourceBundleMessageSource bundleMessageSource;
+    private ReloadableResourceBundleMessageSource bundleMessageSource;
 
 
     public GlobalControllerExceptionHandler(ReloadableResourceBundleMessageSource bundleMessageSource) {
@@ -97,5 +98,38 @@ public class GlobalControllerExceptionHandler {
         return buildResponse(e.getMessage(), 500005,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+//    @ExceptionHandler(NoSuchEntityException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public @ResponseBody
+//    ModelException handlerExceptionNotFound(NoSuchEntityException exception) {
+//        return new ModelException (404666,exception.getMessage());
+//    }
+//
+//    @ExceptionHandler(IncorrectDataException.class)
+//    public @ResponseBody ModelException handlerExceptionBadRequest
+//            (IncorrectDataException exception) {
+//        return new ModelException (400333,exception.getMessage());
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    private ResponseEntity<ModelException> handlerException
+//            (SQLException exception) {
+//        ModelException model = new ModelException();
+//        model.setInfo(exception.getMessage());
+//        model.setCode(599999);
+//        return new ResponseEntity<>(model,HttpStatus.BAD_REQUEST);
+//    }
+//
+//
+//
+//    @ExceptionHandler(Throwable.class)
+//    public ResponseEntity<ModelException> handlerException(Exception e) {
+//        ModelException model = new ModelException();
+//        model.setInfo(e.getMessage());
+//        model.setCode(599999);
+//        return new ResponseEntity<>(model,HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//    }
 
 }

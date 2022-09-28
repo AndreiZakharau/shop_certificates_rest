@@ -14,7 +14,7 @@ public class CertificateValidator implements Validator<Certificate> {
 
     private static final int MIN_LETTERS = 2;
     private static final int MAX_LETTERS = 120;
-    private static final String TEXT_PATTERN = "[^\s]+[A-Za-z0-9-\s'\"-.]*";//[^s]+[A-Za-zА-Яа-я0-9-s'"-.]* посде добовления русского
+    private static final String TEXT_PATTERN = "[^\s]+[A-Za-z0-9-\s'\"-.]*";//[^s]+[A-Za-zА-Яа-я0-9-s'"-.]*"-.]* посде добовления русского
 
     @Override
     public boolean isValid(Certificate certificate) {

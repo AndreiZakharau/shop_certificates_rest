@@ -6,7 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
           <factory-entry name="entityManagerFactory" value="a5add091-b0c5-47a1-b882-fb1b47e07cee" />
-          <factory-entry name="shop_certificates_rest.repository.main" value="a5add091-b0c5-47a1-b882-fb1b47e07cee" />
+          <factory-entry name="shop_certificates_rest.repository.main" value="c00ecdb5-9422-4494-8e28-0488841fa2d6" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>

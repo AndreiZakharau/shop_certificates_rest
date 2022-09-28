@@ -2,6 +2,7 @@ package com.epam.esm.servises.impl;
 
 import com.epam.esm.entitys.Certificate;
 import com.epam.esm.entitys.User;
+import com.epam.esm.exceptions.IncorrectDataException;
 import com.epam.esm.exceptions.NoSuchEntityException;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateInOnlyCertificateMapper;
@@ -16,6 +17,7 @@ import com.epam.esm.models.users.UserModel;
 import com.epam.esm.repositorys.impl.OrderRepositoryImpl;
 import com.epam.esm.repositorys.impl.UserRepositoryImpl;
 import com.epam.esm.servises.UserService;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService<User> {
     private final OnlyCertificateReadMapper onlyCertificateReadMapper;
     private final OrderRepositoryImpl orderRepository;
     private final ModelCertificateInOnlyCertificateMapper onlyCertificateMapper;
+    private final LanguageMassage languageMassage;
 
     @Transactional
     @Override
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserService<User> {
         if(repository.getUserByName(user.getNickName()).isEmpty()){
             repository.addEntity(user);
         }else {
-            //TODO return такой пользователь уже существует
+            throw new IncorrectDataException(languageMassage.getMessage("message.such.user"));
         }
 
     }
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService<User> {
         if(user1.isPresent()) {
             repository.addEntity(user);
         }else {
-            //TODO пользователь с таким id не найден
+            throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }
     }
 
@@ -73,7 +76,7 @@ public class UserServiceImpl implements UserService<User> {
     public Optional<UserModel> getEntity(long id) {
         Optional<User> user = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
         if(user.isEmpty()) {
-            throw new NoSuchEntityException("message.user.with.id");
+            throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }
         return user.map(readMapper::mapFrom);
     }
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService<User> {
     public void deleteEntity(long id) {
         Optional<User> user = repository.getEntityById(id);
         if(user.isEmpty()) {
-            //TODO пользователь с таким id не найден
+            throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }else {
             repository.deleteEntity(id);
         }

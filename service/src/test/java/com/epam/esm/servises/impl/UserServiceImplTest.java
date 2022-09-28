@@ -12,6 +12,7 @@ import com.epam.esm.mapper.impl.userMapper.UserModelReadMapper;
 import com.epam.esm.models.users.UserModel;
 import com.epam.esm.repositorys.impl.OrderRepositoryImpl;
 import com.epam.esm.repositorys.impl.UserRepositoryImpl;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -39,6 +40,7 @@ class UserServiceImplTest {
     private final OrderRepositoryImpl mockOrderRepository = Mockito.mock(OrderRepositoryImpl.class);
     private final ModelCertificateInOnlyCertificateMapper mockOnlyCertificateMapper =
             Mockito.mock(ModelCertificateInOnlyCertificateMapper.class);
+    private final LanguageMassage languageMassage = Mockito.mock(LanguageMassage.class);
 
     private static final User USER_1 = User.builder()
             .id(3L)
@@ -77,7 +79,7 @@ class UserServiceImplTest {
         userService = new UserServiceImpl(mockRepository, mockCreateUserModelMapper,
                 mockModelReadMapper, mockCertificateService, mockCreateOrderMapper,
                 mockCreateCertificateMapper, mockOnlyCertificateReadMapper,
-                mockOrderRepository, mockOnlyCertificateMapper);
+                mockOrderRepository, mockOnlyCertificateMapper,languageMassage);
     }
 
     @AfterEach

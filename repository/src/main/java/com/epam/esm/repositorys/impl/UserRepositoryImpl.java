@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     @Override
     public void deleteEntity(long id) {
         Session session = manager.getCurrentSession();
-        session.createQuery("delete from User where id =:id", User.class)
+        session.createQuery("delete from User where id =:id")
                 .setParameter("id", id);
     }
 
@@ -71,11 +71,4 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
         return session.createQuery(criteriaQuery).uniqueResult().intValue();
     }
 
-//    public void addCertificate(Certificate certificate) {
-//        Session session = manager.getCurrentSession();
-//        session.createNativeQuery("INSERT INTO certificates_tag VALUES(?, ?)")
-//                .setParameter(1, c)
-//                .setParameter(2, t)
-//                .executeUpdate();
-//    }
 }

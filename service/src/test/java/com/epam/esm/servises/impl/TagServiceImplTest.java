@@ -7,6 +7,7 @@ import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
 import com.epam.esm.models.tags.TagModel;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.util.impl.TagsValidator;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +27,7 @@ class TagServiceImplTest {
     private final CertificateServiceImpl mockCertificateServiceImpl = Mockito.mock(CertificateServiceImpl.class);
     private final TagModelReadMapper mockTagModel = Mockito.mock(TagModelReadMapper.class);
     private final OnlyTagReadMapper mockOnlyTag = Mockito.mock(OnlyTagReadMapper.class);
+    private final LanguageMassage languageMassage = Mockito.mock(LanguageMassage.class);
 
     private final static Tag TAG = Tag.builder()
             .id(13L)
@@ -39,7 +41,8 @@ class TagServiceImplTest {
 
     @BeforeEach
     public void setMoc(){
-        tagServiceImpl = new TagServiceImpl(mockTagRepositoryImpl,mockTagValid, mockCertificateServiceImpl,mockTagModel,mockOnlyTag);
+        tagServiceImpl = new TagServiceImpl(mockTagRepositoryImpl,mockTagValid,
+                mockCertificateServiceImpl,mockTagModel,mockOnlyTag,languageMassage);
     }
 
     @AfterEach

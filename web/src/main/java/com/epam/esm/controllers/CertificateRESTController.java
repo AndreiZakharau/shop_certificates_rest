@@ -122,31 +122,10 @@ public class CertificateRESTController {
         return service.getCertificatesByTag(tagName);
     }
 
-
-      //TODO remake
-//    /**
-//     * Sort the list of certificates by date, by name.
-//     * to create, enter the asc field for
-//     *  - dates, in the -  box for the name
-//     *  enter "ASC" or "DESC"
-//     * @param desc string "DESC"
-//     * @return certificates
-//     */
-//    @GetMapping("/certificates/sorted/{desc}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public CollectionModel<ModelCertificate> getSortedCertificates(@RequestParam("page") int page,
-//                                                                   @RequestParam("size") int size,
-//                                                                   @PathVariable String desc) {
-//        int offset = Pagination.offset(page, size);
-//        int totalRecords = service.countAllCertificates();
-//        int pages = Pagination.findPages(totalRecords, size);
-//        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-//        Link prevLink = linkTo(methodOn(CertificateRESTController.class).getSortedCertificates(Pagination.findPrevPage(page), size))
-//                .withRel("prev");
-//        Link nextLink = linkTo(methodOn(CertificateRESTController.class).getSortedCertificates(Pagination.findNextPage(page, lastPage), size))
-//                .withRel("next");
-//        List<ModelCertificate> models = service.getSortedCertificates(size, offset,desc);
-//        return CollectionModel.of(models, prevLink, nextLink);
-//    }
+    @GetMapping("/certificates/tags")
+    public List<ModelCertificate> getCertificatesByTags(@RequestParam String tagName1,
+                                                        @RequestParam String tagName2){
+        return service.getCertificatesByTags(tagName1,tagName2);
+    }
 
 }

@@ -9,6 +9,7 @@ import com.epam.esm.models.certificates.ModelCertificate;
 import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
 import com.epam.esm.repositorys.impl.TagRepositoryImpl;
 import com.epam.esm.util.impl.CertificateValidator;
+import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +31,7 @@ class CertificateServiceImplTest {
     private final ModelCertificateReadMapper mockCertificateReadMapper = Mockito.mock(ModelCertificateReadMapper.class);
     private final CreateCertificateFromOnlyCertificateMapper mockCertificateMapper = Mockito.mock(CreateCertificateFromOnlyCertificateMapper.class);
     private final OnlyCertificateReadMapper mockOnlyCertificateReadMapper =Mockito.mock(OnlyCertificateReadMapper.class);
+    private final LanguageMassage languageMassage = Mockito.mock(LanguageMassage.class);
 
     private static final Certificate CERTIFICATE_1 = Certificate.builder()
             .id(1L)
@@ -54,7 +56,7 @@ class CertificateServiceImplTest {
     @BeforeEach
     void setUp() {
         certificateServiceImpl = new CertificateServiceImpl(mockRepository,mockValidator,mockTag,
-                mockCertificateReadMapper,mockCertificateMapper);
+                mockCertificateReadMapper,mockCertificateMapper,languageMassage);
     }
 
     @AfterEach
