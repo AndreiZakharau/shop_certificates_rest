@@ -27,16 +27,4 @@ public class Tag implements Serializable {
     @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
     private List<Certificate> certificates = new ArrayList<>();
 
-
-//    public Tag(Long id, String tagName) {
-//        this.id = id;
-//        this.tagName = tagName;
-//    }
-//
-//    public Tag(Long id, String tagName, List<Certificate> certificates) {
-//        this.id = id;
-//        this.tagName = tagName;
-//        this.certificates = certificates;
-//    }
-
 }

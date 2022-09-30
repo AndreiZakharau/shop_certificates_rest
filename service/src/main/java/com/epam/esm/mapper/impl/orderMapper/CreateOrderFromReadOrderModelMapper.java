@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class CreateOrderFromReadOrderModelMapper implements Mapper<ReadOrderModel, Order> {
 
     private final CreateCertificateFromModelCertificateMapper certificateMapper;
+
     @Override
     public Order mapFrom(ReadOrderModel object) {
         return Order.builder()

@@ -1,6 +1,7 @@
 package com.epam.esm.models.certificates;
 
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
@@ -9,10 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
-//@EqualsAndHashCode(of = {"certificateName","description"})
-// extends RepresentationModel<OnlyCertificate> если понадобиться links
-public class OnlyCertificate  {
+public class OnlyCertificate extends RepresentationModel<OnlyCertificate> {
 
     private long id;
     private String certificateName;

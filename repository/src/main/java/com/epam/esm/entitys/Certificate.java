@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"certificateName","description"})
+@EqualsAndHashCode(of = {"certificateName", "description"})
 @ToString(exclude = {"tags", "orders"})
 @Builder
 @Entity
@@ -41,14 +41,14 @@ public class Certificate implements Serializable {
             name = "certificates_tag",
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags =  new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public void addTag(Tag tag) {
         tags.add(tag);
         tag.getCertificates().add(this);
     }
 
-    @ManyToMany(mappedBy = "certificates",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "certificates", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
 }

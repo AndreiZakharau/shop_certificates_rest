@@ -17,6 +17,7 @@ public class OnlyTagReadMapper implements Mapper<Tag, OnlyTag> {
                 object.getTagName()
         );
     }
+
     public List<OnlyTag> buildListOnlyTag(List<Tag> tags) {
         List<OnlyTag> tagList = new ArrayList<>();
         for (Tag tag : tags) {
@@ -24,9 +25,6 @@ public class OnlyTagReadMapper implements Mapper<Tag, OnlyTag> {
                     .id(tag.getId())
                     .tagName(tag.getTagName())
                     .build();
-//                    new OnlyTag ();
-//            onlyTag.setId(tag.getId());
-//            onlyTag.setTagName(tag.getTagName());
             tagList.add(onlyTag);
         }
         return tagList;

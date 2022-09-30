@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class LanguageMassage {
 
-        private ReloadableResourceBundleMessageSource messageSource;
+    private ReloadableResourceBundleMessageSource messageSource;
 
-        @Autowired
-        public LanguageMassage(ReloadableResourceBundleMessageSource messageSource){
-            this.messageSource = messageSource;
-        }
-
-        public String getMessage(String messageKey){
-            return messageSource.getMessage(messageKey, null, LocaleContextHolder.getLocale());
-        }
-
+    @Autowired
+    public LanguageMassage(ReloadableResourceBundleMessageSource messageSource) {
+        this.messageSource = messageSource;
     }
+
+    public String getMessage(String messageKey) {
+        return messageSource.getMessage(messageKey, null, LocaleContextHolder.getLocale());
+    }
+
+}

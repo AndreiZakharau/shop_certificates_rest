@@ -5,7 +5,7 @@ import com.epam.esm.models.users.UserModel;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService <T> {
+public interface UserService<T> {
     List<UserModel> getAllEntity(int limit, int offset);
 
     void saveEntity(T t);

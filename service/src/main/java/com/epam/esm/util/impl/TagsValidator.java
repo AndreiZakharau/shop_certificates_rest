@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service("tagsValidator")
 public class TagsValidator implements Validator<Tag> {
 
-    private static final String TEXT_PATTERN = "[^\s]+[A-Za-z0-9-\s'\"-.]*"; //[^s]+[A-Za-zА-Яа-я0-9-s'"-.]* посде добовления русского
+    private static final String TEXT_PATTERN = "[^\s]+[A-Za-z0-9-\s'\"-.]*"; //"[^\s]+[A-Za-zА-я0-9-\s'\"-.]*" посде добовления русского
 
     @Override
     public boolean isValid(Tag tag) {

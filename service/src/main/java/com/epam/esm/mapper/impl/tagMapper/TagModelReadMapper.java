@@ -25,7 +25,7 @@ public class TagModelReadMapper implements Mapper<Tag, TagModel> {
         );
     }
 
-        public List<TagModel> buildListTag(List<Tag> tags) {
+    public List<TagModel> buildListTag(List<Tag> tags) {
         List<TagModel> tagModels = new ArrayList<>();
         for (Tag tag : tags) {
             TagModel model = TagModel.builder()
@@ -33,10 +33,6 @@ public class TagModelReadMapper implements Mapper<Tag, TagModel> {
                     .tagName(tag.getTagName())
                     .certificate(certificateReadMapper.buildListCertificates(tag.getCertificates()))
                     .build();
-//                    new TagModel();
-//            model.setId(tag.getId());
-//            model.setTagName(tag.getTagName());
-//            model.setCertificate(certificateReadMapper.buildListCertificates(tag.getCertificates()));
             tagModels.add(model);
         }
         return tagModels;

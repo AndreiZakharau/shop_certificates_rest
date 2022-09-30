@@ -25,12 +25,12 @@ public class TagRESTController {
 
     private final TagServiceImpl service;
     private final CreateTagFromTagModelMapper mapper;
+
     @Autowired
     public TagRESTController(TagServiceImpl service, CreateTagFromTagModelMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
-
 
     /**
      * Created new tag
@@ -90,7 +90,6 @@ public class TagRESTController {
     @ResponseStatus(HttpStatus.OK)
     public String deleteTag(@PathVariable long id) {
         service.deleteEntity(id);
-//        return "Tag with ID = " + id + " was deleted.";
         return "message.delete.tag";
     }
 
@@ -102,7 +101,7 @@ public class TagRESTController {
     @GetMapping("/tags/all")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<TagModel> getAllTags(@RequestParam("page") int page,
-                                     @RequestParam("size") int size) {
+                                                @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
         int totalRecords = service.countAllTags();
         int pages = Pagination.findPages(totalRecords, size);
@@ -116,13 +115,12 @@ public class TagRESTController {
 
     }
 
-
     /**
      * @return the popular tag from the user
      * with the maximum sum of all orders
      */
     @GetMapping("/tags/popular")
-    public OnlyTag getPopularTagWithUser(){
+    public OnlyTag getPopularTagWithUser() {
         return service.getPopularTagWithUser();
     }
 

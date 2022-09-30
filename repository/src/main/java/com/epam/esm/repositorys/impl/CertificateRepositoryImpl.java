@@ -43,7 +43,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         session.save(certificate);
     }
 
-//    @Override
     public void deleteEntity(Certificate certificate) {
         Session session = manager.getCurrentSession();
         session.delete(certificate);
@@ -66,10 +65,10 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     }
 
 
-    public List<Certificate> getCertificateAndTag(Certificate c, Tag t){
+    public List<Certificate> getCertificateAndTag(Certificate c, Tag t) {
         Session session = manager.getCurrentSession();
         return session.createQuery("select c from Certificate c " +
-                        "join c.tags t where t.id=:tId and c.id=:cId",Certificate.class)
+                        "join c.tags t where t.id=:tId and c.id=:cId", Certificate.class)
                 .setParameter("tId", t.getId())
                 .setParameter("cId", c.getId()).getResultList();
     }
@@ -77,7 +76,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     public List<Certificate> getCertificatesByName(String name) {
         Session session = manager.getCurrentSession();
-        return session.createQuery( "select c from Certificate c  where c.certificateName like concat('%',:name,'%')", Certificate.class)
+        return session.createQuery("select c from Certificate c  where c.certificateName like concat('%',:name,'%')", Certificate.class)
                 .setParameter("name", name)
                 .list();
     }
@@ -89,21 +88,17 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         Root<Certificate> root = criteriaQuery.from(Certificate.class);
         criteriaQuery.select(criteriaBuilder.count(root));
         return session.createQuery(criteriaQuery).uniqueResult().intValue();
-
     }
 
     public List<Certificate> getCertificatesByTags(long id1, long id2) {
         Session session = manager.getCurrentSession();
-        return session.createQuery( "select c from Certificate c " +
-                        "join c.tags t " +
-                        "where t.id =:id1 and t.id =:id2 ", Certificate.class)
-//        return session.createNativeQuery("select c.id from gift_certificate as c " +
-//                        "join certificates_tag as ct on ct.certificate_id = c.id " +
-//                        "join tags as t on t.id = ct.tag_id " +
-//                        "where t.id in (t.id =:id1, t.id =:id2) " +
-//                        "group by c.certificate_name", Certificate.class)
-                .setParameter("id1", id1)
-                .setParameter("id2", id2)
+        return session.createNativeQuery("select c.id,c.certificate_name from gift_certificate as c " +
+                        "join certificates_tag as ct on ct.certificate_id = c.id " +
+                        "join tags as t on t.id = ct.tag_id " +
+                        "where t.id in (?,?) " +
+                        "group by c.certificate_name", Certificate.class)
+                .setParameter(1, id1)
+                .setParameter(2, id2)
                 .list();
 
     }

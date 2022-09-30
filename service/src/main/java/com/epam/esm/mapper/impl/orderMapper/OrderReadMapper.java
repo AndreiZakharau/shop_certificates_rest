@@ -28,7 +28,8 @@ public class OrderReadMapper implements Mapper<Order, OrderModel> {
                 object.getDatePurchase()
         );
     }
-     public List<OrderModel> buildOrderModel(List<Order> orders) {
+
+    public List<OrderModel> buildOrderModel(List<Order> orders) {
         List<OrderModel> list = new ArrayList<>();
         for (Order order : orders) {
             OrderModel model = OrderModel.builder()

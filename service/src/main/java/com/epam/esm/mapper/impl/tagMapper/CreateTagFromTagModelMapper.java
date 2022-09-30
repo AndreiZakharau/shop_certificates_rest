@@ -21,16 +21,4 @@ public class CreateTagFromTagModelMapper implements Mapper<TagModel, Tag> {
                 .certificates(mapper.buildListCertificates(object.getCertificate()))
                 .build();
     }
-
-//        public List<Tag> buildListTag(List<TagModel> models) {
-//        List<Tag> tags = new ArrayList<>();
-//        for (TagModel model : models) {
-//            Tag tag = new Tag();
-//            tag.setId(model.getId());
-//            tag.setTagName(model.getTagName());
-//            tag.getCertificates();
-//        }
-//        return tags;
-//    }
-
 }

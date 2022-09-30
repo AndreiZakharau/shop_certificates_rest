@@ -2,6 +2,7 @@ package com.epam.esm.models.tags;
 
 import com.epam.esm.models.certificates.OnlyCertificate;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagModel {
+public class TagModel extends RepresentationModel<TagModel> {
+
     private long id;
     private String tagName;
     List<OnlyCertificate> certificate;

@@ -15,9 +15,6 @@ public interface CertificateRepository extends EntityRepository<Certificate> {
     @Override
     void addEntity(Certificate certificate);
 
-//    @Override
-//    void deleteEntity(long id);
-
     @Override
     default void updateEntity(Certificate certificate) {
 

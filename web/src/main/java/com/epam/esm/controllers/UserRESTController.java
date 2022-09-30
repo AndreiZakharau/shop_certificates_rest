@@ -27,6 +27,7 @@ public class UserRESTController {
 
     /**
      * Created new user
+     *
      * @param user the user
      * @return new user
      */
@@ -37,7 +38,6 @@ public class UserRESTController {
         return user;
     }
 
-
     /**
      * @param page the page
      * @param size the size
@@ -46,22 +46,23 @@ public class UserRESTController {
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<UserModel> listAllUsers
-        (@RequestParam("page") int page,
-        @RequestParam("size") int size) {
-            int offset = Pagination.offset(page, size);
-            int totalRecords = userService.countAllUsers();
-            int pages = Pagination.findPages(totalRecords, size);
-            int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-            Link prevLink = linkTo(methodOn(UserRESTController.class).listAllUsers(Pagination.findPrevPage(page), size))
-                    .withRel("prev");
-            Link nextLink = linkTo(methodOn(UserRESTController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
-                    .withRel("next");
-            List<UserModel> models = userService.getAllEntity(size, offset);
-            return CollectionModel.of(models, prevLink, nextLink);
+    (@RequestParam("page") int page,
+     @RequestParam("size") int size) {
+        int offset = Pagination.offset(page, size);
+        int totalRecords = userService.countAllUsers();
+        int pages = Pagination.findPages(totalRecords, size);
+        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
+        Link prevLink = linkTo(methodOn(UserRESTController.class).listAllUsers(Pagination.findPrevPage(page), size))
+                .withRel("prev");
+        Link nextLink = linkTo(methodOn(UserRESTController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
+                .withRel("next");
+        List<UserModel> models = userService.getAllEntity(size, offset);
+        return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
      * Get user by id
+     *
      * @param id the id
      * @return user
      */
@@ -73,19 +74,21 @@ public class UserRESTController {
 
     /**
      * update user by id
+     *
      * @param user the user
-     * @param id the id
+     * @param id   the id
      * @return the exposed user
      */
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User updateUser(@RequestBody User user, @PathVariable long id) {
-        userService.updateEntity(id,user);
+        userService.updateEntity(id, user);
         return user;
     }
 
     /**
      * delete user by id
+     *
      * @param id the id
      * @return string response
      */
@@ -98,6 +101,7 @@ public class UserRESTController {
 
     /**
      * get user by name
+     *
      * @param name the name
      * @return user
      */
@@ -108,13 +112,13 @@ public class UserRESTController {
     }
 
     /**
-     * @param userId the userID
+     * @param userId        the userID
      * @param certificateId the CertificateId
      * @return OrderModel
      */
     @PostMapping("users/purchase")
     public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
-        return userService.purchaseCertificate(userId,certificateId);
+        return userService.purchaseCertificate(userId, certificateId);
     }
 
 }

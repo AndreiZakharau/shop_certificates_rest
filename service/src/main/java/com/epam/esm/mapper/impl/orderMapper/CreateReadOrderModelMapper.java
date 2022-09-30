@@ -26,20 +26,15 @@ public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrderModel>
         );
     }
 
-    public List<ReadOrderModel> buildReadOrderModel(List<Order> orders){
+    public List<ReadOrderModel> buildReadOrderModel(List<Order> orders) {
         List<ReadOrderModel> list = new ArrayList<>();
-        for (Order order : orders){
+        for (Order order : orders) {
             ReadOrderModel readOrderModel = ReadOrderModel.builder()
                     .id(order.getId())
                     .certificates(certificate.buildListModelCertificates(order.getCertificates()))
                     .cost(order.getCost())
                     .datePurchase(order.getDatePurchase())
                     .build();
-//            new ReadOrderModel();
-//            readOrderModel.setId(order.getId());
-//            certificate.buildListModelCertificates(order.getCertificates());
-//            readOrderModel.setCost(order.getCost());
-//            readOrderModel.setDatePurchase(order.datePurchase);
             list.add(readOrderModel);
         }
         return list;

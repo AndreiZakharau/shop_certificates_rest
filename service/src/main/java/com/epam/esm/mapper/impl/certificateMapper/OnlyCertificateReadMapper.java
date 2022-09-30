@@ -36,14 +36,6 @@ public class OnlyCertificateReadMapper implements Mapper<Certificate, OnlyCertif
                     .createDate(c.getCreateDate())
                     .lastUpdateDate(c.getLastUpdateDate())
                     .build();
-//                    new OnlyCertificate();
-//            certificate.setId(c.getId());
-//            certificate.setCertificateName(c.getCertificateName());
-//            certificate.setDescription(c.getDescription());
-//            certificate.setDuration(c.getDuration());
-//            certificate.setPrice(c.getPrice());
-//            certificate.setCreateDate(c.getCreateDate());
-//            certificate.setLastUpdateDate(c.getLastUpdateDate());
             certificates.add(certificate);
         }
         return certificates;

@@ -6,7 +6,7 @@ import com.epam.esm.models.certificates.OnlyCertificate;
 import java.util.List;
 import java.util.Optional;
 
-public interface CertificateService <T>{
+public interface CertificateService<T> {
 
     void saveEntity(Certificate certificate);
 

@@ -15,7 +15,6 @@ public interface TagRepository extends EntityRepository<Tag> {
     @Override
     void addEntity(Tag tag);
 
-//    @Override
     void deleteEntity(long id);
 
     @Override

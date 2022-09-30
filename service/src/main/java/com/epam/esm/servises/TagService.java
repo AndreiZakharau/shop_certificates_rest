@@ -7,7 +7,7 @@ import com.epam.esm.models.tags.TagModel;
 import java.util.List;
 import java.util.Optional;
 
-public interface TagService <T> {
+public interface TagService<T> {
 
     List<T> getAllEntity(int limit, int offset);
 

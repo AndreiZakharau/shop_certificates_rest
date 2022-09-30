@@ -25,14 +25,6 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public List<Tag> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-//        CriteriaBuilder cb = session.getCriteriaBuilder();
-//        CriteriaQuery<Tag> criteria = cb.createQuery(Tag.class);
-//        Root<Tag> tagRoot = criteria.from(Tag.class);
-//        criteria.select(tagRoot);
-//        Query<Tag>query = session.createQuery(criteria);
-//        query.setMaxResults(limit);
-//        query.setFirstResult(offset);
-//        return query.getResultList();
         return session.createQuery("select t from Tag t order by t.id", Tag.class)
                 .setMaxResults(limit)
                 .setFirstResult(offset)
@@ -58,8 +50,8 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     public void deleteEntity(long id) {
         Session session = manager.getCurrentSession();
         session.createQuery("delete from Tag where id =:id")
-        .setParameter("id",id)
-        .executeUpdate();
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
     @Override
@@ -72,7 +64,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public List<Tag> getOnlyTags() {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag  t order by t.id",Tag.class).getResultList();
+        return session.createQuery("select t from Tag  t order by t.id", Tag.class).getResultList();
     }
 
     public int countAllTags() {
@@ -87,11 +79,11 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
 
     public Optional<Tag> getTagByName(String tagName) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag  t where tagName =:tagName",Tag.class)
-                .setParameter("tagName",tagName).uniqueResultOptional();
+        return session.createQuery("select t from Tag  t where tagName =:tagName", Tag.class)
+                .setParameter("tagName", tagName).uniqueResultOptional();
     }
 
-    public Tag getPopularTagWithUser(){
+    public Tag getPopularTagWithUser() {
         Session session = manager.getCurrentSession();
         return session.createNativeQuery(
                 "select tags.id,tags.tag_name from tags " +
@@ -106,7 +98,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
                         "join users as us on us.id = ord.user_id group by ord.user_id) as users_sum " +
                         "where users_sum.id = man.id) as resault on resault.u_id = o.user_id " +
                         "group by t.tag_name) as count_tags on count_tags.tag = tags.tag_name " +
-                        "having max(count_tags.count_tag)",Tag.class).uniqueResult();
+                        "having max(count_tags.count_tag)", Tag.class).uniqueResult();
     }
 
 }

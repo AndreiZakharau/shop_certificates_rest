@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CreateUserModelMapper implements Mapper<User, UserModel> {
 
-//    private final OrderReadMapper orderReadMapper;
+    //    private final OrderReadMapper orderReadMapper;
     private final CreateReadOrderModelMapper orderReadMapper;
 
     @Override
@@ -28,17 +28,13 @@ public class CreateUserModelMapper implements Mapper<User, UserModel> {
     }
 
     public List<UserModel> buildUserModelReadMapper(List<User> users) {
-        List<UserModel>list = new ArrayList<>();
-        for (User user : users){
+        List<UserModel> list = new ArrayList<>();
+        for (User user : users) {
             UserModel userModel = UserModel.builder()
                     .id(user.getId())
                     .nickName(user.getNickName())
                     .orders(orderReadMapper.buildReadOrderModel(user.getOrders()))
                     .build();
-//                    new UserModel();
-//            userModel.setId(user.getId());
-//            userModel.setNickName(user.getNickName());
-//            userModel.setOrders(orderReadMapper.buildOrderModel(user.getOrders()));
             list.add(userModel);
         }
         return list;

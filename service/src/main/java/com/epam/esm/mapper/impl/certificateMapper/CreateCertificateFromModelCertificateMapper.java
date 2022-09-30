@@ -31,9 +31,9 @@ public class CreateCertificateFromModelCertificateMapper implements Mapper<Model
                 .build();
     }
 
-    public List<Certificate> buildListCertificateFromModelCertificate(List<ModelCertificate> models){
+    public List<Certificate> buildListCertificateFromModelCertificate(List<ModelCertificate> models) {
         List<Certificate> list = new ArrayList<>();
-        for (ModelCertificate model : models){
+        for (ModelCertificate model : models) {
             Certificate certificate = Certificate.builder()
                     .id(model.getId())
                     .certificateName(model.getCertificateName())

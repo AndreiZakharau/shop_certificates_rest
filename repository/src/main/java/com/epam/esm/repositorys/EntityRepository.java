@@ -11,7 +11,5 @@ public interface EntityRepository<T>{
 
     public void addEntity(T t);
 
-//    public void deleteEntity(long id);
-
     public void updateEntity(T t);
 }

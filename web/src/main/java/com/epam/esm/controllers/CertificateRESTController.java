@@ -32,12 +32,13 @@ public class CertificateRESTController {
      * created certificate
      * enter the following fields: name,description,duration,price
      * dates computed automatically
+     *
      * @param certificate the certificate
      * @return new certificate
      */
     @PostMapping("/certificates")
     @ResponseStatus(HttpStatus.CREATED)
-    public Certificate addCertificate(@RequestBody Certificate certificate){
+    public Certificate addCertificate(@RequestBody Certificate certificate) {
         service.saveEntity(certificate);
         return certificate;
     }
@@ -51,7 +52,7 @@ public class CertificateRESTController {
     @GetMapping("/certificates")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<ModelCertificate> listAllCertificates(@RequestParam("page") int page,
-                                                                @RequestParam("size") int size) {
+                                                                 @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
         int totalRecords = service.countAllCertificates();
         int pages = Pagination.findPages(totalRecords, size);
@@ -66,49 +67,52 @@ public class CertificateRESTController {
 
     /**
      * get certificate by id
+     *
      * @param id the id
      * @return certificate
      */
     @GetMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ModelCertificate> getCertificateById(@PathVariable long id){return service.getEntity(id);
+    public Optional<ModelCertificate> getCertificateById(@PathVariable long id) {
+        return service.getEntity(id);
     }
 
     /**
      * update certificate
      * enter the fields that you want to update
      * date not updated except the date
+     *
      * @param certificate the certificate
-     * @param id the id
+     * @param id          the id
      * @return updated certificate
      */
-    @PatchMapping ("/certificates/{id}")
+    @PatchMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id){
-        service.updateEntity(id,certificate);
+    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id) {
+        service.updateEntity(id, certificate);
         return certificateMapper.mapFrom(certificate);
     }
 
     /**
      * delete certificate by id
+     *
      * @param id the id
      * @return string response
      */
     @DeleteMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteCertificate(@PathVariable long id){
+    public String deleteCertificate(@PathVariable long id) {
         service.deleteEntity(id);
         return "Certificate with ID = " + id + " was deleted.";
     }
 
     /**
-     *
      * @param name the name
      * @return certificates by name or part of name
      */
     @GetMapping("/certificates/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ModelCertificate> getCertificateByName(@PathVariable String name){
+    public List<ModelCertificate> getCertificateByName(@PathVariable String name) {
         return service.getCertificateByName(name);
     }
 
@@ -118,14 +122,13 @@ public class CertificateRESTController {
      */
     @GetMapping("/certificates/tag/{tagName}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ModelCertificate> getCertificateByTag(@PathVariable String tagName){
+    public List<ModelCertificate> getCertificateByTag(@PathVariable String tagName) {
         return service.getCertificatesByTag(tagName);
     }
 
     @GetMapping("/certificates/tags")
     public List<ModelCertificate> getCertificatesByTags(@RequestParam String tagName1,
-                                                        @RequestParam String tagName2){
-        return service.getCertificatesByTags(tagName1,tagName2);
+                                                        @RequestParam String tagName2) {
+        return service.getCertificatesByTags(tagName1, tagName2);
     }
-
 }

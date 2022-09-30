@@ -2,6 +2,7 @@ package com.epam.esm.models.certificates;
 
 import com.epam.esm.models.tags.OnlyTag;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModelCertificate {
+public class ModelCertificate extends RepresentationModel<ModelCertificate> {
 
     private long id;
     private String certificateName;

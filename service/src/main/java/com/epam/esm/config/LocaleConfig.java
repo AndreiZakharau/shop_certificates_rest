@@ -14,9 +14,8 @@ import java.util.Locale;
 @Configuration
 @ComponentScan(basePackages = "com.epam.esm.config")
 public class LocaleConfig implements WebMvcConfigurer {
-    
 
-        @Bean(name = "messageSource")
+    @Bean(name = "messageSource")
     public MessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
         ret.setBasename("classpath:message");
@@ -33,6 +32,4 @@ public class LocaleConfig implements WebMvcConfigurer {
         resolver.setDefaultLocale(Locale.ENGLISH);
         return resolver;
     }
-
-
 }

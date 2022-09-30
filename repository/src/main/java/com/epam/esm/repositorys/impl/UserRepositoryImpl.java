@@ -17,7 +17,6 @@ import java.util.Optional;
 @Repository
 public class UserRepositoryImpl implements UserRepository, Serializable {
 
-
     @Autowired
     private SessionFactory manager;
 

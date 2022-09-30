@@ -43,16 +43,16 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     @Override
     @Transactional
     public void saveEntity(Certificate certificate) {
-        if (certificateValidator.isValid(certificate)){
-            if(certificate.getCreateDate() == null){
+        if (certificateValidator.isValid(certificate)) {
+            if (certificate.getCreateDate() == null) {
                 certificate.setCreateDate(LocalDateTime.now());
             }
-            if(certificate.getLastUpdateDate() == null){
+            if (certificate.getLastUpdateDate() == null) {
                 certificate.setLastUpdateDate(certificate.getCreateDate().plusDays(certificate.getDuration()));
             }
             repository.addEntity(certificate);
             saveCertificatesTag();
-        }else{
+        } else {
             throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
         }
     }
@@ -60,24 +60,24 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     @Override
     @Transactional
     public void updateEntity(long id, OnlyCertificate onlyCertificate) {
-        Optional <Certificate> c = repository.getEntityById(id);
+        Optional<Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
             onlyCertificate.setId(id);
-            if(onlyCertificate.getCertificateName() == null)
+            if (onlyCertificate.getCertificateName() == null)
                 onlyCertificate.setCertificateName(c.get().getCertificateName());
-            if(onlyCertificate.getDescription()== null)
+            if (onlyCertificate.getDescription() == null)
                 onlyCertificate.setDescription(c.get().getDescription());
-            if(onlyCertificate.getPrice() <= 0)
+            if (onlyCertificate.getPrice() <= 0)
                 onlyCertificate.setPrice(c.get().getPrice());
-            if(onlyCertificate.getDuration()<=0) {
+            if (onlyCertificate.getDuration() <= 0) {
                 onlyCertificate.setDuration(c.get().getDuration());
                 onlyCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(c.get().getDuration()));
-            }else{
+            } else {
                 onlyCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(onlyCertificate.getDuration()));
             }
-            if(onlyCertificate.getCreateDate()==null)
+            if (onlyCertificate.getCreateDate() == null)
                 onlyCertificate.setCreateDate(c.get().getCreateDate());
-            if(onlyCertificate.getLastUpdateDate()==null)
+            if (onlyCertificate.getLastUpdateDate() == null)
                 onlyCertificate.setLastUpdateDate(c.get().getLastUpdateDate());
             Certificate certificate = certificateMapper.mapFrom(onlyCertificate);
 
@@ -85,11 +85,11 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
                 saveCertificatesTag();
-            }else{
+            } else {
                 throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
             }
-        }else{
-           throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
+        } else {
+            throw new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
     }
 
@@ -97,10 +97,10 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     @Transactional
     public Optional<ModelCertificate> getEntity(long id) {
         Optional<Certificate> c = repository.getEntityById(id);
-        if(c.isEmpty()) {
-            throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
+        if (c.isEmpty()) {
+            throw new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
-            return c.map(readMapper::mapFrom);
+        return c.map(readMapper::mapFrom);
     }
 
     @Override
@@ -109,8 +109,8 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         Optional<Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
             repository.deleteEntity(c.get());
-        }else {
-            throw  new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
+        } else {
+            throw new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
         }
     }
 
@@ -122,14 +122,14 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
 
 
     @Transactional
-    public void saveCertificatesTag(){
+    public void saveCertificatesTag() {
 
         List<Tag> tagList = tagRepository.getOnlyTags();
         for (Tag t : tagList) {
             List<Certificate> certificateList = repository.getCertificatesByName(t.getTagName());
             if (!certificateList.isEmpty()) {
                 for (Certificate c : certificateList) {
-                    if(repository.getCertificateAndTag(c,t).isEmpty()) {
+                    if (repository.getCertificateAndTag(c, t).isEmpty()) {
                         repository.saveCertificatesTag(c.getId(), t.getId());
                     }
                 }
@@ -138,12 +138,12 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     }
 
     @Transactional
-    public List<ModelCertificate> getCertificatesByTag(String tagName){
-        List<Certificate> list ;
+    public List<ModelCertificate> getCertificatesByTag(String tagName) {
+        List<Certificate> list;
         Optional<Tag> tag = tagRepository.getTagByName(tagName);
-        if(tag.isEmpty()){
+        if (tag.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.be.empty"));
-        }else {
+        } else {
             list = repository.getCertificatesByName(tagName);
         }
         return readMapper.buildListModelCertificates(list);
@@ -153,7 +153,7 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
     public List<ModelCertificate> getCertificateByName(String name) {
         List<Certificate> list = repository.getCertificatesByName(name);
         if (list.isEmpty()) {
-            throw  new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
+            throw new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
         }
         return readMapper.buildListModelCertificates(list);
     }
@@ -163,9 +163,9 @@ public class CertificateServiceImpl implements CertificateService<ModelCertifica
         Optional<Tag> tag1 = tagRepository.getTagByName(tagName1);
         Optional<Tag> tag2 = tagRepository.getTagByName(tagName2);
         if (tag1.isEmpty() || tag2.isEmpty()) {
-            throw  new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
+            throw new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
         }
 
-        return readMapper.buildListModelCertificates(repository.getCertificatesByTags(tag1.get().getId(),tag2.get().getId()));
+        return readMapper.buildListModelCertificates(repository.getCertificatesByTags(tag1.get().getId(), tag2.get().getId()));
     }
 }

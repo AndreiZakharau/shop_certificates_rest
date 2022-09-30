@@ -52,9 +52,9 @@ public class UserServiceImpl implements UserService<User> {
     @Transactional
     @Override
     public void saveEntity(User user) {
-        if(repository.getUserByName(user.getNickName()).isEmpty()){
+        if (repository.getUserByName(user.getNickName()).isEmpty()) {
             repository.addEntity(user);
-        }else {
+        } else {
             throw new IncorrectDataException(languageMassage.getMessage("message.such.user"));
         }
 
@@ -64,9 +64,9 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public void updateEntity(long id, User user) {
         Optional<User> user1 = repository.getEntityById(id);
-        if(user1.isPresent()) {
+        if (user1.isPresent()) {
             repository.addEntity(user);
-        }else {
+        } else {
             throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }
     }
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public Optional<UserModel> getEntity(long id) {
         Optional<User> user = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }
         return user.map(readMapper::mapFrom);
@@ -85,9 +85,9 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public void deleteEntity(long id) {
         Optional<User> user = repository.getEntityById(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
-        }else {
+        } else {
             repository.deleteEntity(id);
         }
     }
@@ -104,13 +104,12 @@ public class UserServiceImpl implements UserService<User> {
     }
 
 
-
     @Transactional
     public CreateOrderModel purchaseCertificate(long userId, long certificateId) {
 
         Optional<ModelCertificate> certificate = certificateService.getEntity(certificateId);
         certificate.get().setCreateDate(LocalDateTime.now());
-        certificateService.updateEntity(certificateId,(onlyCertificateMapper.mapFrom(certificate.get())));
+        certificateService.updateEntity(certificateId, (onlyCertificateMapper.mapFrom(certificate.get())));
         Optional<User> user = Optional.ofNullable(repository.getEntityById(userId)).orElseThrow();
         List<Certificate> list = new ArrayList<>();
         Optional<ModelCertificate> updateCertificate = certificateService.getEntity(certificateId);
@@ -118,11 +117,11 @@ public class UserServiceImpl implements UserService<User> {
         CreateOrderModel model = CreateOrderModel.builder()
                 .user(user.map(modelReadMapper::mapFrom).orElseThrow())
                 .certificate(onlyCertificateReadMapper.buildListCertificates(list)).build();
-            model.setUser((user.map(modelReadMapper::mapFrom).orElseThrow()));
-            model.setCertificate(onlyCertificateReadMapper.buildListCertificates(list));
-            model.setCost(updateCertificate.get().getPrice());
-            model.setDatePurchase(LocalDateTime.now());
-            orderRepository.saveOrder(orderMapper.mapFrom(model));
+        model.setUser((user.map(modelReadMapper::mapFrom).orElseThrow()));
+        model.setCertificate(onlyCertificateReadMapper.buildListCertificates(list));
+        model.setCost(updateCertificate.get().getPrice());
+        model.setDatePurchase(LocalDateTime.now());
+        orderRepository.saveOrder(orderMapper.mapFrom(model));
 
         return model;
     }

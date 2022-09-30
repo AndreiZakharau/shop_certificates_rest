@@ -12,8 +12,7 @@ public class OrderRepositoryImpl {
     @Autowired
     private SessionFactory manager;
 
-
-    public Order saveOrder(Order order){
+    public Order saveOrder(Order order) {
         Session session = manager.getCurrentSession();
         session.saveOrUpdate(order);
         return order;

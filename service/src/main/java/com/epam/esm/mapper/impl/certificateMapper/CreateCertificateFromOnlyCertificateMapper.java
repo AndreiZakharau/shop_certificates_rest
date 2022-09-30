@@ -24,7 +24,7 @@ public class CreateCertificateFromOnlyCertificateMapper implements Mapper<OnlyCe
                 .build();
     }
 
-        public List<Certificate> buildListCertificates(List<OnlyCertificate> list) {
+    public List<Certificate> buildListCertificates(List<OnlyCertificate> list) {
         List<Certificate> certificates = new ArrayList<>();
         for (OnlyCertificate c : list) {
             Certificate cm = Certificate.builder()
@@ -36,14 +36,6 @@ public class CreateCertificateFromOnlyCertificateMapper implements Mapper<OnlyCe
                     .createDate(c.getCreateDate())
                     .lastUpdateDate(c.getLastUpdateDate())
                     .build();
-//                    new Certificate();
-//            cm.setId(c.getId());
-//            cm.setCertificateName(c.getCertificateName());
-//            cm.setDescription(c.getDescription());
-//            cm.setDuration(c.getDuration());
-//            cm.setPrice(c.getPrice());
-//            cm.setCreateDate(c.getCreateDate());
-//            cm.setLastUpdateDate(c.getLastUpdateDate());
             certificates.add(cm);
         }
         return certificates;

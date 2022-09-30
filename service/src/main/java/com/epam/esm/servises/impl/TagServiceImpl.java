@@ -40,9 +40,9 @@ public class TagServiceImpl implements TagService<TagModel> {
     @Override
     @Transactional
     public void saveEntity(Tag tag) {
-        if(tagsValidator.isValid(tag)) {
+        if (tagsValidator.isValid(tag)) {
             repository.addEntity(tag);
-        }else {
+        } else {
             throw new IncorrectDataException("message.not.valid");
         }
         certificateServiceImpl.saveCertificatesTag();
@@ -50,17 +50,17 @@ public class TagServiceImpl implements TagService<TagModel> {
 
     @Override
     @Transactional
-    public void updateEntity(long id, TagModel tagModel){
+    public void updateEntity(long id, TagModel tagModel) {
         Optional<Tag> tag = repository.getEntityById(id);
-        if (tag.isPresent()){
+        if (tag.isPresent()) {
             tagModel.setTagName(tagModel.getTagName());
-           if (tagsValidator.isValidModel(tagModel)){
-              repository.updateEntity(tag.get());
-           }else{
+            if (tagsValidator.isValidModel(tagModel)) {
+                repository.updateEntity(tag.get());
+            } else {
                 throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
-           }
-        }else {
-            return ; //TODO (бросить исключение, что токого id нет)
+            }
+        } else {
+            throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
 
         }
         certificateServiceImpl.saveCertificatesTag();
@@ -83,7 +83,7 @@ public class TagServiceImpl implements TagService<TagModel> {
     @Transactional
     public Optional<TagModel> findById(long id) {
         Optional<Tag> tag = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
-        if(tag.isEmpty()){
+        if (tag.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
         }
         return tag.map(readMapper::mapFrom);
@@ -92,19 +92,17 @@ public class TagServiceImpl implements TagService<TagModel> {
     @Override
     @Transactional
     public void deleteEntity(long id) {
-        if(repository.getEntityById(id).isPresent()){
+        if (repository.getEntityById(id).isPresent()) {
             repository.deleteEntity(id);
-        }else {
-                    throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
-       }
+        } else {
+            throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
+        }
     }
 
     @Transactional
-    public OnlyTag getPopularTagWithUser(){
+    public OnlyTag getPopularTagWithUser() {
         return onlyTagReadMapper.mapFrom(repository.getPopularTagWithUser());
     }
-
-    
 
 
 }

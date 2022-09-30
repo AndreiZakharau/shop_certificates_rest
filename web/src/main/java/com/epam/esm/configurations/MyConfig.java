@@ -17,31 +17,11 @@ import java.util.Properties;
 @Configuration
 @ComponentScan("com.epam.esm")
 @EnableTransactionManagement
-//@EnableWebMvc
-//@PropertySource(value = "classpath:application-dev.properties")
+
 public class MyConfig {
 
     @Autowired
     private Environment environment;
-
-
-//    @Bean(name = "messageSource")
-//    public MessageSource getMessageSource() {
-//        ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-//        ret.setBasename("classpath:locale/message.properties");
-//        ret.setCacheSeconds(1);
-//        ret.setUseCodeAsDefaultMessage(true);
-//        ret.setDefaultEncoding("utf-8");
-//        return ret;
-//    }
-//
-//    @Bean(name = "localeResolver")
-//    public LocaleResolver localeResolver() {
-//        final AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-//        resolver.setSupportedLocales(Arrays.asList(new Locale("en_US"), new Locale("ru_RU")));
-//        resolver.setDefaultLocale(Locale.ENGLISH);
-//        return resolver;
-//    }
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -53,8 +33,6 @@ public class MyConfig {
         return sessionFactory;
     }
 
-
-
     @Bean
     public PlatformTransactionManager hibernateTransactionManager() {
         HibernateTransactionManager transactionManager
@@ -62,7 +40,6 @@ public class MyConfig {
         transactionManager.setSessionFactory(sessionFactory().getObject());
         return transactionManager;
     }
-
 
     @Bean
     public DataSource dataSource() {
@@ -87,7 +64,6 @@ public class MyConfig {
 
         return properties;
     }
-
 
 
 }
