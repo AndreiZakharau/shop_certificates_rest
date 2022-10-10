@@ -7,9 +7,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -69,11 +66,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
 
     public int countAllTags() {
         Session session = manager.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
-        criteriaQuery.select(criteriaBuilder.count(tagRoot));
-        return session.createQuery(criteriaQuery).uniqueResult().intValue();
+        return (int) session.createQuery("select t from Tag t order by t.id",Tag.class).stream().count();
 
     }
 

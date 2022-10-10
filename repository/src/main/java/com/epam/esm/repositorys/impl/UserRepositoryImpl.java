@@ -7,9 +7,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +20,10 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     @Override
     public List<User> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select u from User u", User.class).getResultList();
+        return session.createQuery("select u from User u", User.class)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     @Override
     public void updateEntity(User user) {
         Session session = manager.getCurrentSession();
-        session.update(user);
+        session.merge(user);
     }
 
     @Override
@@ -63,11 +63,7 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
 
     public int countAllUsers() {
         Session session = manager.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        Root<User> tagRoot = criteriaQuery.from(User.class);
-        criteriaQuery.select(criteriaBuilder.count(tagRoot));
-        return session.createQuery(criteriaQuery).uniqueResult().intValue();
+        return (int) session.createQuery("select u from User u",User.class).stream().count();
     }
 
 }

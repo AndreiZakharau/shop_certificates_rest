@@ -1,7 +1,6 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entitys.Certificate;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
 import com.epam.esm.models.certificates.ModelCertificate;
 import com.epam.esm.models.certificates.OnlyCertificate;
@@ -10,6 +9,7 @@ import com.epam.esm.servises.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +26,6 @@ public class CertificateRESTController {
 
     private final CertificateServiceImpl service;
     private final CreateCertificateFromOnlyCertificateMapper certificateMapper;
-    private final CreateCertificateFromModelCertificateMapper modelCertificateMapper;
 
     /**
      * created certificate
@@ -74,7 +73,12 @@ public class CertificateRESTController {
     @GetMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<ModelCertificate> getCertificateById(@PathVariable long id) {
-        return service.getEntity(id);
+        Optional<ModelCertificate> model = Optional.ofNullable(service.getEntity(id)).get();
+        model.get().add(linkTo(methodOn(CertificateRESTController.class)
+                .listAllCertificates(1,5))
+                .withRel("certificates")
+                .withType(HttpMethod.GET.name()));;
+        return model;
     }
 
     /**
@@ -131,4 +135,5 @@ public class CertificateRESTController {
                                                         @RequestParam String tagName2) {
         return service.getCertificatesByTags(tagName1, tagName2);
     }
+
 }

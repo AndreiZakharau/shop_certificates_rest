@@ -65,7 +65,12 @@ public class UserServiceImpl implements UserService<User> {
     public void updateEntity(long id, User user) {
         Optional<User> user1 = repository.getEntityById(id);
         if (user1.isPresent()) {
-            repository.addEntity(user);
+            user.setId(id);
+            if(user.getNickName()==null)
+                user.setNickName(user1.get().getNickName());
+            if(user.getEmail()==null)
+                user.setEmail(user1.get().getEmail());
+            repository.updateEntity(user);
         } else {
             throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
         }

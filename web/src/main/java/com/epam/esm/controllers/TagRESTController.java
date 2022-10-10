@@ -1,14 +1,14 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entitys.Tag;
-import com.epam.esm.mapper.impl.tagMapper.CreateTagFromTagModelMapper;
 import com.epam.esm.models.tags.OnlyTag;
 import com.epam.esm.models.tags.TagModel;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.TagServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +19,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-
+@RequiredArgsConstructor
 @RequestMapping("/api/v1.1")
+
 public class TagRESTController {
 
     private final TagServiceImpl service;
-    private final CreateTagFromTagModelMapper mapper;
-
-    @Autowired
-    public TagRESTController(TagServiceImpl service, CreateTagFromTagModelMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     /**
      * Created new tag
@@ -50,8 +44,19 @@ public class TagRESTController {
      */
     @GetMapping("/tags")
     @ResponseStatus(HttpStatus.OK)
-    public List<OnlyTag> listOnlyTags() {
-        return service.listOnlyTags();
+    public CollectionModel<OnlyTag> listOnlyTags(@RequestParam("page") int page,
+                                      @RequestParam("size") int size) {
+        int offset = Pagination.offset(page, size);
+        int totalRecords = service.countAllTags();
+        int pages = Pagination.findPages(totalRecords, size);
+        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
+        Link prevLink = linkTo(methodOn(TagRESTController.class).getAllTags(Pagination.findPrevPage(page), size))
+                .withRel("prev");
+        Link nextLink = linkTo(methodOn(TagRESTController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
+                .withRel("next");
+        List<OnlyTag> models = (service.getAllOnlyTag(size, offset));
+
+        return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
@@ -63,7 +68,9 @@ public class TagRESTController {
     @GetMapping("/tags/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<TagModel> getTag(@PathVariable long id) {
-        return service.findById(id);
+        Optional<TagModel> model = service.findById(id);
+        allTagsLink(Optional.ofNullable(model).get().orElseThrow());
+        return model;
     }
 
     /**
@@ -111,8 +118,8 @@ public class TagRESTController {
         Link nextLink = linkTo(methodOn(TagRESTController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
                 .withRel("next");
         List<TagModel> models = service.getAllEntity(size, offset);
-        return CollectionModel.of(models, prevLink, nextLink);
 
+        return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
@@ -120,8 +127,27 @@ public class TagRESTController {
      * with the maximum sum of all orders
      */
     @GetMapping("/tags/popular")
-    public OnlyTag getPopularTagWithUser() {
-        return service.getPopularTagWithUser();
+    public TagModel getPopularTagWithUser() {
+        TagModel tag = service.getPopularTagWithUser();
+        allTagsLink(tag);
+        return  tag;
+    }
+
+    private void allTagsLink(TagModel model) {
+        model.add(linkTo(methodOn(TagRESTController.class)
+                .getAllTags(1,5))
+                .withRel("tags")
+                .withType(HttpMethod.GET.name()));
+    }
+
+    private void deleteLinksForTags(List<TagModel> models){
+        for (TagModel tagModel : models){
+            long tagId = tagModel.getId();
+            tagModel.add(linkTo(methodOn(TagRESTController.class)
+                    .deleteTag(tagId))
+                    .withRel("delete_tag")
+                    .withType(HttpMethod.DELETE.name()));
+        }
     }
 
 }

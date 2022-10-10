@@ -1,14 +1,17 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entitys.User;
+import com.epam.esm.mapper.impl.userMapper.UserModelReadMapper;
 import com.epam.esm.models.orders.CreateOrderModel;
 import com.epam.esm.models.users.ReadUserModel;
 import com.epam.esm.models.users.UserModel;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.servises.impl.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +23,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1.1")
+@RequiredArgsConstructor
 public class UserRESTController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    private final UserModelReadMapper readMapper;
 
     /**
      * Created new user
@@ -35,6 +41,7 @@ public class UserRESTController {
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User user) {
         userService.saveEntity(user);
+        allUsersLink(readMapper.mapFrom(user));
         return user;
     }
 
@@ -69,7 +76,12 @@ public class UserRESTController {
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<UserModel> getUserById(@PathVariable long id) {
-        return userService.getEntity(id);
+        Optional<UserModel> userModel = Optional.ofNullable(userService.getEntity(id)).get();
+        userModel.get().add(linkTo(methodOn(UserRESTController.class)
+                .listAllUsers(1,5))
+                .withRel("usrs")
+                .withType(HttpMethod.GET.name()));
+        return userModel;
     }
 
     /**
@@ -108,7 +120,9 @@ public class UserRESTController {
     @GetMapping("/users/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<ReadUserModel> getUserByName(@PathVariable String name) {
-        return userService.getUserByName(name);
+        Optional<ReadUserModel> userModel =userService.getUserByName(name);
+        allUsersLink(userModel.get());
+        return userModel;
     }
 
     /**
@@ -119,6 +133,13 @@ public class UserRESTController {
     @PostMapping("users/purchase")
     public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
         return userService.purchaseCertificate(userId, certificateId);
+    }
+
+    private void allUsersLink(ReadUserModel userModel) {
+        userModel.add(linkTo(methodOn(UserRESTController.class)
+                .listAllUsers(1,5))
+                .withRel("usrs")
+                .withType(HttpMethod.GET.name()));
     }
 
 }

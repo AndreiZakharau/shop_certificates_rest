@@ -36,6 +36,11 @@ public class TagServiceImpl implements TagService<TagModel> {
         List<Tag> tags = repository.getAllEntity(limit, offset);
         return readMapper.buildListTag(tags);
     }
+    @Transactional
+    public List<OnlyTag> getAllOnlyTag(int limit, int offset) {
+        List<Tag> tags = repository.getAllEntity(limit, offset);
+        return onlyTagReadMapper.buildListOnlyTag(tags);
+    }
 
     @Override
     @Transactional
@@ -100,8 +105,8 @@ public class TagServiceImpl implements TagService<TagModel> {
     }
 
     @Transactional
-    public OnlyTag getPopularTagWithUser() {
-        return onlyTagReadMapper.mapFrom(repository.getPopularTagWithUser());
+    public TagModel getPopularTagWithUser() {
+        return readMapper.mapFrom(repository.getPopularTagWithUser());
     }
 
 
