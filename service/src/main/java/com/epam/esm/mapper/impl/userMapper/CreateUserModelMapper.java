@@ -3,7 +3,7 @@ package com.epam.esm.mapper.impl.userMapper;
 import com.epam.esm.entity.User;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.orderMapper.CreateReadOrderModelMapper;
-import com.epam.esm.model.user.UserModel;
+import com.epam.esm.Dto.userDto.ReadUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +12,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CreateUserModelMapper implements Mapper<User, UserModel> {
+public class CreateUserModelMapper implements Mapper<User, ReadUser> {
 
     //    private final OrderReadMapper orderReadMapper;
     private final CreateReadOrderModelMapper orderReadMapper;
 
     @Override
-    public UserModel mapFrom(User object) {
-        return new UserModel(
+    public ReadUser mapFrom(User object) {
+        return new ReadUser(
                 object.getId(),
                 object.getNickName(),
                 orderReadMapper.buildReadOrderModel(object.getOrders())
@@ -27,15 +27,15 @@ public class CreateUserModelMapper implements Mapper<User, UserModel> {
         );
     }
 
-    public List<UserModel> buildUserModelReadMapper(List<User> users) {
-        List<UserModel> list = new ArrayList<>();
+    public List<ReadUser> buildUserModelReadMapper(List<User> users) {
+        List<ReadUser> list = new ArrayList<>();
         for (User user : users) {
-            UserModel userModel = UserModel.builder()
+            ReadUser readUser = ReadUser.builder()
                     .id(user.getId())
                     .nickName(user.getNickName())
                     .orders(orderReadMapper.buildReadOrderModel(user.getOrders()))
                     .build();
-            list.add(userModel);
+            list.add(readUser);
         }
         return list;
     }

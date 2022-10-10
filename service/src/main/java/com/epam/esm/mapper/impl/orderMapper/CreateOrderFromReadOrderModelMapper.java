@@ -3,18 +3,18 @@ package com.epam.esm.mapper.impl.orderMapper;
 import com.epam.esm.entity.Order;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
-import com.epam.esm.model.order.ReadOrderModel;
+import com.epam.esm.Dto.orderDto.ReadOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateOrderFromReadOrderModelMapper implements Mapper<ReadOrderModel, Order> {
+public class CreateOrderFromReadOrderModelMapper implements Mapper<ReadOrder, Order> {
 
     private final CreateCertificateFromModelCertificateMapper certificateMapper;
 
     @Override
-    public Order mapFrom(ReadOrderModel object) {
+    public Order mapFrom(ReadOrder object) {
         return Order.builder()
                 .certificates(certificateMapper.buildListCertificateFromModelCertificate(object.getCertificates()))
                 .cost(object.getCost())

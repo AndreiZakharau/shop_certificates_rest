@@ -2,11 +2,11 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.User;
 import com.epam.esm.mapper.impl.userMapper.UserModelReadMapper;
-import com.epam.esm.model.order.CreateOrderModel;
-import com.epam.esm.model.user.ReadUserModel;
-import com.epam.esm.model.user.UserModel;
+import com.epam.esm.Dto.orderDto.CreateOrder;
+import com.epam.esm.Dto.userDto.CreateUser;
+import com.epam.esm.Dto.userDto.ReadUser;
 import com.epam.esm.pagination.Pagination;
-import com.epam.esm.servise.impl.UserServiceImpl;
+import com.epam.esm.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -32,10 +32,10 @@ public class UserRESTController {
     private final UserModelReadMapper readMapper;
 
     /**
-     * Created new user
+     * Created new userDto
      *
-     * @param user the user
-     * @return new user
+     * @param user the userDto
+     * @return new userDto
      */
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,7 +52,7 @@ public class UserRESTController {
      */
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<UserModel> listAllUsers
+    public CollectionModel<ReadUser> listAllUsers
     (@RequestParam("page") int page,
      @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
@@ -63,20 +63,20 @@ public class UserRESTController {
                 .withRel("prev");
         Link nextLink = linkTo(methodOn(UserRESTController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
                 .withRel("next");
-        List<UserModel> models = userService.getAllEntity(size, offset);
+        List<ReadUser> models = userService.getAllEntity(size, offset);
         return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
-     * Get user by id
+     * Get userDto by id
      *
      * @param id the id
-     * @return user
+     * @return userDto
      */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UserModel> getUserById(@PathVariable long id) {
-        Optional<UserModel> userModel = Optional.ofNullable(userService.getEntity(id)).get();
+    public Optional<ReadUser> getUserById(@PathVariable long id) {
+        Optional<ReadUser> userModel = Optional.ofNullable(userService.getEntity(id)).get();
         userModel.get().add(linkTo(methodOn(UserRESTController.class)
                 .listAllUsers(1,5))
                 .withRel("usrs")
@@ -85,11 +85,11 @@ public class UserRESTController {
     }
 
     /**
-     * update user by id
+     * update userDto by id
      *
-     * @param user the user
+     * @param user the userDto
      * @param id   the id
-     * @return the exposed user
+     * @return the exposed userDto
      */
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -99,28 +99,28 @@ public class UserRESTController {
     }
 
     /**
-     * delete user by id
+     * delete userDto by id
      *
      * @param id the id
      * @return string response
      */
     @DeleteMapping("users/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteUser(@PathVariable long id) {
         userService.deleteEntity(id);
         return "User with ID = " + id + ", was deleted.";
     }
 
     /**
-     * get user by name
+     * get userDto by name
      *
      * @param name the name
-     * @return user
+     * @return userDto
      */
     @GetMapping("/users/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ReadUserModel> getUserByName(@PathVariable String name) {
-        Optional<ReadUserModel> userModel =userService.getUserByName(name);
+    public Optional<CreateUser> getUserByName(@PathVariable String name) {
+        Optional<CreateUser> userModel =userService.getUserByName(name);
         allUsersLink(userModel.get());
         return userModel;
     }
@@ -131,11 +131,11 @@ public class UserRESTController {
      * @return OrderModel
      */
     @PostMapping("users/purchase")
-    public CreateOrderModel purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
+    public CreateOrder purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
         return userService.purchaseCertificate(userId, certificateId);
     }
 
-    private void allUsersLink(ReadUserModel userModel) {
+    private void allUsersLink(CreateUser userModel) {
         userModel.add(linkTo(methodOn(UserRESTController.class)
                 .listAllUsers(1,5))
                 .withRel("usrs")

@@ -3,7 +3,7 @@ package com.epam.esm.mapper.impl.tagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.certificateMapper.OnlyCertificateReadMapper;
-import com.epam.esm.model.tag.TagModel;
+import com.epam.esm.Dto.tagDto.ReadTag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,29 +12,29 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TagModelReadMapper implements Mapper<Tag, TagModel> {
+public class TagModelReadMapper implements Mapper<Tag, ReadTag> {
 
     private final OnlyCertificateReadMapper certificateReadMapper;
 
     @Override
-    public TagModel mapFrom(Tag object) {
-        return new TagModel(
+    public ReadTag mapFrom(Tag object) {
+        return new ReadTag(
                 object.getId(),
                 object.getTagName(),
                 certificateReadMapper.buildListCertificates(object.getCertificates())
         );
     }
 
-    public List<TagModel> buildListTag(List<Tag> tags) {
-        List<TagModel> tagModels = new ArrayList<>();
+    public List<ReadTag> buildListTag(List<Tag> tags) {
+        List<ReadTag> readTags = new ArrayList<>();
         for (Tag tag : tags) {
-            TagModel model = TagModel.builder()
+            ReadTag model = ReadTag.builder()
                     .id(tag.getId())
                     .tagName(tag.getTagName())
                     .certificate(certificateReadMapper.buildListCertificates(tag.getCertificates()))
                     .build();
-            tagModels.add(model);
+            readTags.add(model);
         }
-        return tagModels;
+        return readTags;
     }
 }

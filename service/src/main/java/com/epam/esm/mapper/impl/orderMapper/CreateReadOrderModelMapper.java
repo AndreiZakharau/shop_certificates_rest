@@ -3,7 +3,7 @@ package com.epam.esm.mapper.impl.orderMapper;
 import com.epam.esm.entity.Order;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
-import com.epam.esm.model.order.ReadOrderModel;
+import com.epam.esm.Dto.orderDto.ReadOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrderModel> {
+public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrder> {
 
     private final ModelCertificateReadMapper certificate;
 
     @Override
-    public ReadOrderModel mapFrom(Order object) {
-        return new ReadOrderModel(
+    public ReadOrder mapFrom(Order object) {
+        return new ReadOrder(
                 object.getId(),
                 certificate.buildListModelCertificates(object.getCertificates()),
                 object.getCost(),
@@ -26,16 +26,16 @@ public class CreateReadOrderModelMapper implements Mapper<Order, ReadOrderModel>
         );
     }
 
-    public List<ReadOrderModel> buildReadOrderModel(List<Order> orders) {
-        List<ReadOrderModel> list = new ArrayList<>();
+    public List<ReadOrder> buildReadOrderModel(List<Order> orders) {
+        List<ReadOrder> list = new ArrayList<>();
         for (Order order : orders) {
-            ReadOrderModel readOrderModel = ReadOrderModel.builder()
+            ReadOrder readOrder = ReadOrder.builder()
                     .id(order.getId())
                     .certificates(certificate.buildListModelCertificates(order.getCertificates()))
                     .cost(order.getCost())
                     .datePurchase(order.getDatePurchase())
                     .build();
-            list.add(readOrderModel);
+            list.add(readOrder);
         }
         return list;
     }

@@ -1,10 +1,10 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.model.tag.OnlyTag;
-import com.epam.esm.model.tag.TagModel;
+import com.epam.esm.Dto.tagDto.CreateTag;
+import com.epam.esm.Dto.tagDto.ReadTag;
 import com.epam.esm.pagination.Pagination;
-import com.epam.esm.servise.impl.TagServiceImpl;
+import com.epam.esm.service.impl.TagServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -27,10 +27,10 @@ public class TagRESTController {
     private final TagServiceImpl service;
 
     /**
-     * Created new tag
+     * Created new tagDto
      *
-     * @param tag the tag
-     * @return new tag
+     * @param tag the tagDto
+     * @return new tagDto
      */
     @PostMapping("/tags")
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,12 +40,12 @@ public class TagRESTController {
     }
 
     /**
-     * @return list tag
+     * @return list tagDto
      */
     @GetMapping("/tags")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<OnlyTag> listOnlyTags(@RequestParam("page") int page,
-                                      @RequestParam("size") int size) {
+    public CollectionModel<CreateTag> listOnlyTags(@RequestParam("page") int page,
+                                                   @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
         int totalRecords = service.countAllTags();
         int pages = Pagination.findPages(totalRecords, size);
@@ -54,61 +54,61 @@ public class TagRESTController {
                 .withRel("prev");
         Link nextLink = linkTo(methodOn(TagRESTController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
                 .withRel("next");
-        List<OnlyTag> models = (service.getAllOnlyTag(size, offset));
+        List<CreateTag> models = (service.getAllOnlyTag(size, offset));
 
         return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
-     * Get tag by id
+     * Get tagDto by id
      *
      * @param id the id
-     * @return tag
+     * @return tagDto
      */
     @GetMapping("/tags/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<TagModel> getTag(@PathVariable long id) {
-        Optional<TagModel> model = service.findById(id);
+    public Optional<ReadTag> getTag(@PathVariable long id) {
+        Optional<ReadTag> model = service.findById(id);
         allTagsLink(Optional.ofNullable(model).get().orElseThrow());
         return model;
     }
 
     /**
-     * update tag by id
+     * update tagDto by id
      *
-     * @param tag the tag
+     * @param tag the tagDto
      * @param id  the id
-     * @return the exposed tag
+     * @return the exposed tagDto
      */
     @PatchMapping("/tags/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TagModel updateTag(@RequestBody TagModel tag, @PathVariable long id) {
+    public ReadTag updateTag(@RequestBody ReadTag tag, @PathVariable long id) {
         service.updateEntity(id, tag);
         return tag;
     }
 
     /**
-     * delete tag by id
+     * delete tagDto by id
      *
      * @param id the id
      * @return string response
      */
     @DeleteMapping("/tags/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteTag(@PathVariable long id) {
         service.deleteEntity(id);
-        return "message.delete.tag";
+        return "message.delete.tagDto";
     }
 
     /**
      * @param page the page
      * @param size the size
-     * @return list tag
+     * @return list tagDto
      */
     @GetMapping("/tags/all")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<TagModel> getAllTags(@RequestParam("page") int page,
-                                                @RequestParam("size") int size) {
+    public CollectionModel<ReadTag> getAllTags(@RequestParam("page") int page,
+                                               @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
         int totalRecords = service.countAllTags();
         int pages = Pagination.findPages(totalRecords, size);
@@ -117,33 +117,33 @@ public class TagRESTController {
                 .withRel("prev");
         Link nextLink = linkTo(methodOn(TagRESTController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
                 .withRel("next");
-        List<TagModel> models = service.getAllEntity(size, offset);
+        List<ReadTag> models = service.getAllEntity(size, offset);
 
         return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
-     * @return the popular tag from the user
-     * with the maximum sum of all order
+     * @return the popular tagDto from the userDto
+     * with the maximum sum of all orderDto
      */
     @GetMapping("/tags/popular")
-    public TagModel getPopularTagWithUser() {
-        TagModel tag = service.getPopularTagWithUser();
+    public ReadTag getPopularTagWithUser() {
+        ReadTag tag = service.getPopularTagWithUser();
         allTagsLink(tag);
         return  tag;
     }
 
-    private void allTagsLink(TagModel model) {
+    private void allTagsLink(ReadTag model) {
         model.add(linkTo(methodOn(TagRESTController.class)
                 .getAllTags(1,5))
-                .withRel("tag")
+                .withRel("tagDto")
                 .withType(HttpMethod.GET.name()));
     }
 
-    private void deleteLinksForTags(List<TagModel> models){
-        for (TagModel tagModel : models){
-            long tagId = tagModel.getId();
-            tagModel.add(linkTo(methodOn(TagRESTController.class)
+    private void deleteLinksForTags(List<ReadTag> models){
+        for (ReadTag readTag : models){
+            long tagId = readTag.getId();
+            readTag.add(linkTo(methodOn(TagRESTController.class)
                     .deleteTag(tagId))
                     .withRel("delete_tag")
                     .withType(HttpMethod.DELETE.name()));

@@ -14,12 +14,12 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "nick_name")
     private String nickName;
     private String email;

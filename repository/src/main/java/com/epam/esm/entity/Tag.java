@@ -11,10 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "tagName")
-@ToString(exclude = "certificate")
+@ToString(exclude = "certificateDto")
 @Builder
 @Entity
-@Table(name = "tag", schema = "buy_certificate_rest_dev")
+@Table(name = "tags", schema = "buy_certificate_rest_dev")
 public class Tag implements Serializable {
 
     @Id

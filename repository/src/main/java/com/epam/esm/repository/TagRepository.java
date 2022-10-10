@@ -20,6 +20,6 @@ public interface TagRepository extends EntityRepository<Tag> {
     @Override
     void updateEntity(Tag tag);
 
-    List<Tag> getOnlyTags();
+    List<Tag> getTags();
 
 }

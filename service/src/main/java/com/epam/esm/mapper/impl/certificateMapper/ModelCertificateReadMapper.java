@@ -3,7 +3,7 @@ package com.epam.esm.mapper.impl.certificateMapper;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
-import com.epam.esm.model.certificate.ModelCertificate;
+import com.epam.esm.Dto.certificateDto.ReadCertificate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ModelCertificateReadMapper implements Mapper<Certificate, ModelCertificate> {
+public class ModelCertificateReadMapper implements Mapper<Certificate, ReadCertificate> {
 
     private final OnlyTagReadMapper tagReadMapper;
 
     @Override
-    public ModelCertificate mapFrom(Certificate object) {
-        return new ModelCertificate(
+    public ReadCertificate mapFrom(Certificate object) {
+        return new ReadCertificate(
                 object.getId(),
                 object.getCertificateName(),
                 object.getDescription(),
@@ -30,10 +30,10 @@ public class ModelCertificateReadMapper implements Mapper<Certificate, ModelCert
         );
     }
 
-    public List<ModelCertificate> buildListModelCertificates(List<Certificate> certificates) {
-        List<ModelCertificate> list = new ArrayList<>();
+    public List<ReadCertificate> buildListModelCertificates(List<Certificate> certificates) {
+        List<ReadCertificate> list = new ArrayList<>();
         for (Certificate certificate : certificates) {
-            ModelCertificate model = ModelCertificate.builder()
+            ReadCertificate model = ReadCertificate.builder()
                     .id(certificate.getId())
                     .certificateName(certificate.getCertificateName())
                     .description(certificate.getDescription())

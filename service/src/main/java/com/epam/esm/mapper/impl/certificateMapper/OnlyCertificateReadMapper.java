@@ -2,18 +2,18 @@ package com.epam.esm.mapper.impl.certificateMapper;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.model.certificate.OnlyCertificate;
+import com.epam.esm.Dto.certificateDto.CreateCertificate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OnlyCertificateReadMapper implements Mapper<Certificate, OnlyCertificate> {
+public class OnlyCertificateReadMapper implements Mapper<Certificate, CreateCertificate> {
 
     @Override
-    public OnlyCertificate mapFrom(Certificate object) {
-        return new OnlyCertificate(
+    public CreateCertificate mapFrom(Certificate object) {
+        return new CreateCertificate(
                 object.getId(),
                 object.getCertificateName(),
                 object.getDescription(),
@@ -24,10 +24,10 @@ public class OnlyCertificateReadMapper implements Mapper<Certificate, OnlyCertif
         );
     }
 
-    public List<OnlyCertificate> buildListCertificates(List<Certificate> list) {
-        List<OnlyCertificate> certificates = new ArrayList<>();
+    public List<CreateCertificate> buildListCertificates(List<Certificate> list) {
+        List<CreateCertificate> certificates = new ArrayList<>();
         for (Certificate c : list) {
-            OnlyCertificate certificate = OnlyCertificate.builder()
+            CreateCertificate certificate = CreateCertificate.builder()
                     .id(c.getId())
                     .certificateName(c.getCertificateName())
                     .description(c.getDescription())

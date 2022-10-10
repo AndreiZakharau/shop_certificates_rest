@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"certificateName", "description"})
-//@ToString(exclude = {"tag", "order"})
 @Builder
 @Entity
 @Table(name = "gift_certificate")

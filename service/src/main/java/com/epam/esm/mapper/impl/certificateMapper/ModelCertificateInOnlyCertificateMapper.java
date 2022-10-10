@@ -1,15 +1,15 @@
 package com.epam.esm.mapper.impl.certificateMapper;
 
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.model.certificate.ModelCertificate;
-import com.epam.esm.model.certificate.OnlyCertificate;
+import com.epam.esm.Dto.certificateDto.ReadCertificate;
+import com.epam.esm.Dto.certificateDto.CreateCertificate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ModelCertificateInOnlyCertificateMapper implements Mapper<ModelCertificate, OnlyCertificate> {
+public class ModelCertificateInOnlyCertificateMapper implements Mapper<ReadCertificate, CreateCertificate> {
     @Override
-    public OnlyCertificate mapFrom(ModelCertificate object) {
-        return new OnlyCertificate(
+    public CreateCertificate mapFrom(ReadCertificate object) {
+        return new CreateCertificate(
                 object.getId(),
                 object.getCertificateName(),
                 object.getDescription(),

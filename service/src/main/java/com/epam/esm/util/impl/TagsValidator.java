@@ -1,7 +1,7 @@
 package com.epam.esm.util.impl;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.model.tag.TagModel;
+import com.epam.esm.Dto.tagDto.ReadTag;
 import com.epam.esm.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class TagsValidator implements Validator<Tag> {
             return name.length() >= 2 && name.length() <= 60 && name.matches(TEXT_PATTERN);
     }
 
-    public boolean isValidModel(TagModel tag) {
+    public boolean isValidModel(ReadTag tag) {
         return isNameValid(tag.getTagName());
     }
 

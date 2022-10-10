@@ -2,10 +2,10 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
-import com.epam.esm.model.certificate.ModelCertificate;
-import com.epam.esm.model.certificate.OnlyCertificate;
+import com.epam.esm.Dto.certificateDto.ReadCertificate;
+import com.epam.esm.Dto.certificateDto.CreateCertificate;
 import com.epam.esm.pagination.Pagination;
-import com.epam.esm.servise.impl.CertificateServiceImpl;
+import com.epam.esm.service.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -28,12 +28,12 @@ public class CertificateRESTController {
     private final CreateCertificateFromOnlyCertificateMapper certificateMapper;
 
     /**
-     * created certificate
+     * created certificateDto
      * enter the following fields: name,description,duration,price
      * dates computed automatically
      *
-     * @param certificate the certificate
-     * @return new certificate
+     * @param certificate the certificateDto
+     * @return new certificateDto
      */
     @PostMapping("/certificates")
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,12 +46,12 @@ public class CertificateRESTController {
     /**
      * @param page the page
      * @param size the size
-     * @return list certificate
+     * @return list certificateDto
      */
     @GetMapping("/certificates")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<ModelCertificate> listAllCertificates(@RequestParam("page") int page,
-                                                                 @RequestParam("size") int size) {
+    public CollectionModel<ReadCertificate> listAllCertificates(@RequestParam("page") int page,
+                                                                @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
         int totalRecords = service.countAllCertificates();
         int pages = Pagination.findPages(totalRecords, size);
@@ -60,51 +60,51 @@ public class CertificateRESTController {
                 .withRel("prev");
         Link nextLink = linkTo(methodOn(CertificateRESTController.class).listAllCertificates(Pagination.findNextPage(page, lastPage), size))
                 .withRel("next");
-        List<ModelCertificate> models = service.getAllEntity(size, offset);
+        List<ReadCertificate> models = service.getAllEntity(size, offset);
         return CollectionModel.of(models, prevLink, nextLink);
     }
 
     /**
-     * get certificate by id
+     * get certificateDto by id
      *
      * @param id the id
-     * @return certificate
+     * @return certificateDto
      */
     @GetMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ModelCertificate> getCertificateById(@PathVariable long id) {
-        Optional<ModelCertificate> model = Optional.ofNullable(service.getEntity(id)).get();
+    public Optional<ReadCertificate> getCertificateById(@PathVariable long id) {
+        Optional<ReadCertificate> model = Optional.ofNullable(service.getEntity(id)).get();
         model.get().add(linkTo(methodOn(CertificateRESTController.class)
                 .listAllCertificates(1,5))
-                .withRel("certificate")
+                .withRel("certificateDto")
                 .withType(HttpMethod.GET.name()));;
         return model;
     }
 
     /**
-     * update certificate
+     * update certificateDto
      * enter the fields that you want to update
      * date not updated except the date
      *
-     * @param certificate the certificate
+     * @param certificate the certificateDto
      * @param id          the id
-     * @return updated certificate
+     * @return updated certificateDto
      */
     @PatchMapping("/certificates/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Certificate updateCertificate(@RequestBody OnlyCertificate certificate, @PathVariable long id) {
+    public Certificate updateCertificate(@RequestBody CreateCertificate certificate, @PathVariable long id) {
         service.updateEntity(id, certificate);
         return certificateMapper.mapFrom(certificate);
     }
 
     /**
-     * delete certificate by id
+     * delete certificateDto by id
      *
      * @param id the id
      * @return string response
      */
     @DeleteMapping("/certificates/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteCertificate(@PathVariable long id) {
         service.deleteEntity(id);
         return "Certificate with ID = " + id + " was deleted.";
@@ -112,27 +112,27 @@ public class CertificateRESTController {
 
     /**
      * @param name the name
-     * @return certificate by name or part of name
+     * @return certificateDto by name or part of name
      */
     @GetMapping("/certificates/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ModelCertificate> getCertificateByName(@PathVariable String name) {
+    public List<ReadCertificate> getCertificateByName(@PathVariable String name) {
         return service.getCertificateByName(name);
     }
 
     /**
      * @param tagName the tagName
-     * @return certificate by tagName
+     * @return certificateDto by tagName
      */
     @GetMapping("/certificates/tag/{tagName}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ModelCertificate> getCertificateByTag(@PathVariable String tagName) {
+    public List<ReadCertificate> getCertificateByTag(@PathVariable String tagName) {
         return service.getCertificatesByTag(tagName);
     }
 
     @GetMapping("/certificates/tags")
-    public List<ModelCertificate> getCertificatesByTags(@RequestParam String tagName1,
-                                                        @RequestParam String tagName2) {
+    public List<ReadCertificate> getCertificatesByTags(@RequestParam String tagName1,
+                                                       @RequestParam String tagName2) {
         return service.getCertificatesByTags(tagName1, tagName2);
     }
 

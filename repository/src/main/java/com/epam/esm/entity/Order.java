@@ -16,12 +16,12 @@ import java.util.List;
 @Builder
 @ToString
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;

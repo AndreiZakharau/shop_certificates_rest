@@ -22,7 +22,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public List<Tag> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag t order by t.id", Tag.class)
+        return session.createQuery("select t from Tag t", Tag.class)
                 .setMaxResults(limit)
                 .setFirstResult(offset)
                 .getResultList();
@@ -59,14 +59,14 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     }
 
     @Override
-    public List<Tag> getOnlyTags() {
+    public List<Tag> getTags() {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag  t order by t.id", Tag.class).getResultList();
+        return session.createQuery("select t from Tag  t", Tag.class).getResultList();
     }
 
     public int countAllTags() {
         Session session = manager.getCurrentSession();
-        return (int) session.createQuery("select t from Tag t order by t.id",Tag.class).stream().count();
+        return (int) session.createQuery("select t from Tag t",Tag.class).stream().count();
 
     }
 
