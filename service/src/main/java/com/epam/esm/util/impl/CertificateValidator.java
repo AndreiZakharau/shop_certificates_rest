@@ -1,7 +1,7 @@
 package com.epam.esm.util.impl;
 
-import com.epam.esm.entitys.Certificate;
-import com.epam.esm.repositorys.impl.CertificateRepositoryImpl;
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.repository.impl.CertificateRepositoryImpl;
 import com.epam.esm.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

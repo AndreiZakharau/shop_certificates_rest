@@ -1,9 +1,9 @@
 package com.epam.esm.mapper.impl.orderMapper;
 
-import com.epam.esm.entitys.Order;
+import com.epam.esm.entity.Order;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
-import com.epam.esm.models.orders.ReadOrderModel;
+import com.epam.esm.model.order.ReadOrderModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
 package com.epam.esm.mapper.impl.certificateMapper;
 
-import com.epam.esm.entitys.Certificate;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.models.certificates.OnlyCertificate;
+import com.epam.esm.model.certificate.OnlyCertificate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

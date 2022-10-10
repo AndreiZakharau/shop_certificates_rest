@@ -1,7 +1,7 @@
 package com.epam.esm.util.impl;
 
-import com.epam.esm.entitys.Tag;
-import com.epam.esm.models.tags.TagModel;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.model.tag.TagModel;
 import com.epam.esm.util.Validator;
 import org.springframework.stereotype.Service;
 

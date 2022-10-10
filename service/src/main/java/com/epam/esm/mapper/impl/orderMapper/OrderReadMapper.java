@@ -1,10 +1,10 @@
 package com.epam.esm.mapper.impl.orderMapper;
 
-import com.epam.esm.entitys.Order;
+import com.epam.esm.entity.Order;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
 import com.epam.esm.mapper.impl.userMapper.UserModelReadMapper;
-import com.epam.esm.models.orders.OrderModel;
+import com.epam.esm.model.order.OrderModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

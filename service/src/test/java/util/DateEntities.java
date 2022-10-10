@@ -1,6 +1,6 @@
 package util;
 
-import com.epam.esm.entitys.User;
+import com.epam.esm.entity.User;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;

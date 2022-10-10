@@ -1,9 +1,9 @@
 package com.epam.esm.mapper.impl.certificateMapper;
 
-import com.epam.esm.entitys.Certificate;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.tagMapper.CreateTagFromOnlyTagMapper;
-import com.epam.esm.models.certificates.ModelCertificate;
+import com.epam.esm.model.certificate.ModelCertificate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

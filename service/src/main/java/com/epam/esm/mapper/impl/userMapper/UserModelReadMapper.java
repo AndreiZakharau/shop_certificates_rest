@@ -1,8 +1,8 @@
 package com.epam.esm.mapper.impl.userMapper;
 
-import com.epam.esm.entitys.User;
+import com.epam.esm.entity.User;
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.models.users.ReadUserModel;
+import com.epam.esm.model.user.ReadUserModel;
 import org.springframework.stereotype.Service;
 
 @Service

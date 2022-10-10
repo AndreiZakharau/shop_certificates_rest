@@ -1,9 +1,9 @@
 package com.epam.esm.mapper.impl.userMapper;
 
-import com.epam.esm.entitys.User;
+import com.epam.esm.entity.User;
 import com.epam.esm.mapper.Mapper;
 import com.epam.esm.mapper.impl.orderMapper.CreateReadOrderModelMapper;
-import com.epam.esm.models.users.UserModel;
+import com.epam.esm.model.user.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
