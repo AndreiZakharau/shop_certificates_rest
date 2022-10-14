@@ -5,11 +5,12 @@ import java.util.Optional;
 
 public interface EntityRepository<T>{
 
-    public List<T> getAllEntity(int limit, int offset);
+     List<T> getAllEntity(int limit, int offset);
 
-    public Optional<T> getEntityById(long id);
+     Optional<T> getEntityById(long id);
 
-    public void addEntity(T t);
+     void addEntity(T t);
 
-    public void updateEntity(T t);
+     void updateEntity(T t);
+
 }

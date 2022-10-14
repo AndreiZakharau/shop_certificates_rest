@@ -1,15 +1,18 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.Dto.tagDto.CreateTag;
+import com.epam.esm.Dto.tagDto.ReadTag;
+import com.epam.esm.Dto.tagDto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.IncorrectDataException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.mapper.impl.tagMapper.OnlyTagReadMapper;
-import com.epam.esm.mapper.impl.tagMapper.TagModelReadMapper;
-import com.epam.esm.Dto.tagDto.CreateTag;
-import com.epam.esm.Dto.tagDto.ReadTag;
+import com.epam.esm.mapper.impl.tagMapper.TransitionReadTagFromTag;
+import com.epam.esm.mapper.impl.tagMapper.TransitionTagDtoFromTag;
+import com.epam.esm.mapper.impl.tagMapper.TransitionTagFromCreateTag;
+import com.epam.esm.mapper.impl.tagMapper.TransitionTagFromTagDto;
 import com.epam.esm.repository.impl.TagRepositoryImpl;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.impl.TagsValidator;
+import com.epam.esm.util.validator.impl.TagsValidator;
 import com.epam.esm.util.messange.LanguageMassage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,31 +23,38 @@ import java.util.Optional;
 
 @Service("tagService")
 @RequiredArgsConstructor
-public class TagServiceImpl implements TagService<ReadTag> {
+public class TagServiceImpl implements TagService {
 
 
     private final TagRepositoryImpl repository;
     private final TagsValidator tagsValidator;
     private final CertificateServiceImpl certificateServiceImpl;
-    private final TagModelReadMapper readMapper;
-    private final OnlyTagReadMapper onlyTagReadMapper;
+    private final TransitionReadTagFromTag readMapper;
+    private final TransitionTagDtoFromTag tagDtoFromTag;
     private final LanguageMassage languageMassage;
+    private final TransitionTagFromCreateTag createTagMapper;
+    private final TransitionTagFromTagDto tagFromTagDto;
 
 
     @Transactional
+    @Override
     public List<ReadTag> getAllEntity(int limit, int offset) {
         List<Tag> tags = repository.getAllEntity(limit, offset);
         return readMapper.buildListTag(tags);
     }
+
+
     @Transactional
-    public List<CreateTag> getAllOnlyTag(int limit, int offset) {
+    @Override
+    public List<TagDto> getAllTag(int limit, int offset) {
         List<Tag> tags = repository.getAllEntity(limit, offset);
-        return onlyTagReadMapper.buildListOnlyTag(tags);
+        return tagDtoFromTag.buildListOnlyTag(tags);
     }
 
     @Override
     @Transactional
-    public void saveEntity(Tag tag) {
+    public void saveEntity(CreateTag createTag) {
+        Tag tag = createTagMapper.mapFrom(createTag);
         if (tagsValidator.isValid(tag)) {
             repository.addEntity(tag);
         } else {
@@ -55,11 +65,11 @@ public class TagServiceImpl implements TagService<ReadTag> {
 
     @Override
     @Transactional
-    public void updateEntity(long id, ReadTag readTag) {
+    public void updateEntity(long id, TagDto tagDto) {
         Optional<Tag> tag = repository.getEntityById(id);
         if (tag.isPresent()) {
-            readTag.setTagName(readTag.getTagName());
-            if (tagsValidator.isValidModel(readTag)) {
+            tag.get().setTagName(tagDto.getTagName());
+            if (tagsValidator.isValidModel(tagFromTagDto.mapFrom(tagDto))) {
                 repository.updateEntity(tag.get());
             } else {
                 throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
@@ -71,16 +81,17 @@ public class TagServiceImpl implements TagService<ReadTag> {
         certificateServiceImpl.saveCertificatesTag();
     }
 
+
     @Override
     @Transactional
-    public List<CreateTag> listOnlyTags() {
+    public List<TagDto> listTags() {
         List<Tag> tags = repository.getTags();
-        return onlyTagReadMapper.buildListOnlyTag(tags);
+        return tagDtoFromTag.buildListOnlyTag(tags);
     }
 
     @Override
     @Transactional
-    public int countAllTags() {
+    public int countAll() {
         return repository.countAllTags();
     }
 
@@ -105,6 +116,7 @@ public class TagServiceImpl implements TagService<ReadTag> {
     }
 
     @Transactional
+    @Override
     public ReadTag getPopularTagWithUser() {
         return readMapper.mapFrom(repository.getPopularTagWithUser());
     }

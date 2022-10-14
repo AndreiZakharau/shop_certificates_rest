@@ -1,23 +1,30 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Certificate;
+import com.epam.esm.Dto.certificateDto.CertificateDto;
 import com.epam.esm.Dto.certificateDto.CreateCertificate;
+import com.epam.esm.Dto.certificateDto.ReadCertificate;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CertificateService<T> {
+public interface CertificateService extends EntityService<ReadCertificate, CreateCertificate, CertificateDto> {
 
-    void saveEntity(Certificate certificate);
+    @Override
+    void saveEntity(CreateCertificate createCertificate);
 
-    void updateEntity(long id, CreateCertificate createCertificate);
+    @Override
+    void updateEntity(long id, CertificateDto certificateDto);
 
-    List<T> getAllEntity(int limit, int offset);
+    @Override
+    List<ReadCertificate> getAllEntity(int limit, int offset);
 
-    Optional<T> getEntity(long id);
+    @Override
+    Optional<ReadCertificate> findById(long id);
 
+    @Override
     void deleteEntity(long id);
 
-    int countAllCertificates();
+    @Override
+    int countAll();
 
 }

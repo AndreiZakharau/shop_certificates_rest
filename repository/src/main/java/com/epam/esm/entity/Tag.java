@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "tagName")
-@ToString(exclude = "certificateDto")
 @Builder
 @Entity
 @Table(name = "tags", schema = "buy_certificate_rest_dev")
@@ -23,6 +22,7 @@ public class Tag implements Serializable {
     @Column(name = "tag_name")
     private String tagName;
 
+    @ToString.Exclude
     @Builder.Default
     @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
     private List<Certificate> certificates = new ArrayList<>();

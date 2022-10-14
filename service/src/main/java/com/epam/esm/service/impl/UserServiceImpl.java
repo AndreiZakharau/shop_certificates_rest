@@ -1,19 +1,23 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.IncorrectDataException;
-import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromModelCertificateMapper;
-import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateInOnlyCertificateMapper;
-import com.epam.esm.mapper.impl.certificateMapper.OnlyCertificateReadMapper;
-import com.epam.esm.mapper.impl.orderMapper.CreateOrderMapper;
-import com.epam.esm.mapper.impl.userMapper.CreateUserModelMapper;
-import com.epam.esm.mapper.impl.userMapper.UserModelReadMapper;
 import com.epam.esm.Dto.certificateDto.ReadCertificate;
 import com.epam.esm.Dto.orderDto.CreateOrder;
 import com.epam.esm.Dto.userDto.CreateUser;
 import com.epam.esm.Dto.userDto.ReadUser;
+import com.epam.esm.Dto.userDto.UserDto;
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.User;
+import com.epam.esm.exception.IncorrectDataException;
+import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromReadCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCreateCertificateFromCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCreateCertificateInFromReadCertificate;
+import com.epam.esm.mapper.impl.orderMapper.TransitionOrderFromCreateOrder;
+import com.epam.esm.mapper.impl.userMapper.TransitionCreateUserFromUser;
+import com.epam.esm.mapper.impl.userMapper.TransitionReadUserFromUser;
+import com.epam.esm.mapper.impl.userMapper.TransitionUserFromCreateUser;
+import com.epam.esm.mapper.impl.userMapper.TransitionUserFromReadUser;
+import com.epam.esm.mapper.impl.userMapper.TransitionUserFromUserDto;
 import com.epam.esm.repository.impl.OrderRepositoryImpl;
 import com.epam.esm.repository.impl.UserRepositoryImpl;
 import com.epam.esm.service.UserService;
@@ -30,17 +34,22 @@ import java.util.Optional;
 @Service("UserService")
 @RequiredArgsConstructor
 
-public class UserServiceImpl implements UserService<User> {
+public class UserServiceImpl implements UserService {
 
     private final UserRepositoryImpl repository;
-    private final CreateUserModelMapper readMapper;
-    private final UserModelReadMapper modelReadMapper;
-    private final CertificateServiceImpl certificateService;
-    private final CreateOrderMapper orderMapper;
-    private final CreateCertificateFromModelCertificateMapper certificateMapper;
-    private final OnlyCertificateReadMapper onlyCertificateReadMapper;
     private final OrderRepositoryImpl orderRepository;
-    private final ModelCertificateInOnlyCertificateMapper onlyCertificateMapper;
+    private final CertificateServiceImpl certificateService;
+
+    private final TransitionReadUserFromUser readMapper;
+    private final TransitionUserFromUserDto userFromUserDto;
+    private final TransitionCreateUserFromUser modelReadMapper;
+    private final TransitionUserFromCreateUser userFromCreateUser;
+    private final TransitionUserFromReadUser userFromReadUser;
+    private final TransitionOrderFromCreateOrder orderMapper;
+    private final TransitionCertificateFromReadCertificate certificateMapper;
+    private final TransitionCreateCertificateFromCertificate onlyCertificateReadMapper;
+    private final TransitionCreateCertificateInFromReadCertificate onlyCertificateMapper;
+
     private final LanguageMassage languageMassage;
 
     @Transactional
@@ -51,7 +60,8 @@ public class UserServiceImpl implements UserService<User> {
 
     @Transactional
     @Override
-    public void saveEntity(User user) {
+    public void saveEntity(CreateUser createUser) {
+        User user = userFromCreateUser.mapFrom(createUser);
         if (repository.getUserByName(user.getNickName()).isEmpty()) {
             repository.addEntity(user);
         } else {
@@ -62,7 +72,8 @@ public class UserServiceImpl implements UserService<User> {
 
     @Transactional
     @Override
-    public void updateEntity(long id, User user) {
+    public void updateEntity(long id, UserDto userDto) {
+        User user = userFromUserDto.mapFrom(userDto);
         Optional<User> user1 = repository.getEntityById(id);
         if (user1.isPresent()) {
             user.setId(id);
@@ -78,7 +89,7 @@ public class UserServiceImpl implements UserService<User> {
 
     @Transactional
     @Override
-    public Optional<ReadUser> getEntity(long id) {
+    public Optional<ReadUser> findById(long id) {
         Optional<User> user = Optional.ofNullable(repository.getEntityById(id)).orElseThrow();
         if (user.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.user.with.id"));
@@ -98,26 +109,27 @@ public class UserServiceImpl implements UserService<User> {
     }
 
     @Transactional
-    public int countAllUsers() {
+    @Override
+    public int countAll() {
         return repository.countAllUsers();
     }
 
     @Transactional
-    public Optional<CreateUser> getUserByName(String name) {
+    @Override
+    public Optional<ReadUser> getUserByName(String name) {
         Optional<User> user = Optional.ofNullable(repository.getUserByName(name)).orElseThrow();
-        return user.map(modelReadMapper::mapFrom);
+        return user.map(readMapper::mapFrom);
     }
 
 
-    @Transactional
+    @Transactional  // TODO logic save order
     public CreateOrder purchaseCertificate(long userId, long certificateId) {
 
-        Optional<ReadCertificate> certificate = certificateService.getEntity(certificateId);
-        certificate.get().setCreateDate(LocalDateTime.now());
-        certificateService.updateEntity(certificateId, (onlyCertificateMapper.mapFrom(certificate.get())));
+        Optional<ReadCertificate> certificate = certificateService.findById(certificateId);
+//        certificateService.updateEntity(certificateId, (onlyCertificateMapper.mapFrom(certificate.get())));
         Optional<User> user = Optional.ofNullable(repository.getEntityById(userId)).orElseThrow();
         List<Certificate> list = new ArrayList<>();
-        Optional<ReadCertificate> updateCertificate = certificateService.getEntity(certificateId);
+        Optional<ReadCertificate> updateCertificate = certificateService.findById(certificateId);
         list.add(certificateMapper.mapFrom(updateCertificate.get()));
         CreateOrder model = CreateOrder.builder()
                 .user(user.map(modelReadMapper::mapFrom).orElseThrow())

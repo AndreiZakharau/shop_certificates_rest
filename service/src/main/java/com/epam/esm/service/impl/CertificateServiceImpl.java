@@ -1,35 +1,41 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.Dto.certificateDto.CertificateDto;
+import com.epam.esm.Dto.certificateDto.CreateCertificate;
+import com.epam.esm.Dto.certificateDto.ReadCertificate;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.IncorrectDataException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.CreateCertificateFromOnlyCertificateMapper;
-import com.epam.esm.mapper.impl.certificateMapper.ModelCertificateReadMapper;
-import com.epam.esm.Dto.certificateDto.ReadCertificate;
-import com.epam.esm.Dto.certificateDto.CreateCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromCertificateDto;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromCreateCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromReadCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionReadCertificateFromCertificate;
 import com.epam.esm.repository.impl.CertificateRepositoryImpl;
 import com.epam.esm.repository.impl.TagRepositoryImpl;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.util.impl.CertificateValidator;
 import com.epam.esm.util.messange.LanguageMassage;
+import com.epam.esm.util.validator.impl.CertificateValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service("certificateService")
 @RequiredArgsConstructor
-public class CertificateServiceImpl implements CertificateService<ReadCertificate> {
+public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepositoryImpl repository;
     private final CertificateValidator certificateValidator;
     private final TagRepositoryImpl tagRepository;
-    private final ModelCertificateReadMapper readMapper;
-    private final CreateCertificateFromOnlyCertificateMapper certificateMapper;
+    private final TransitionReadCertificateFromCertificate readMapper;
+    private final TransitionCertificateFromReadCertificate certificateFromReadCertificate;
+    private final TransitionCertificateFromCertificateDto certificateFromCertificateDto;
+    private final TransitionCertificateFromCreateCertificate certificateFromCreateCertificate;
     private final LanguageMassage languageMassage;
 
     @Override
@@ -42,7 +48,8 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
 
     @Override
     @Transactional
-    public void saveEntity(Certificate certificate) {
+    public void saveEntity(CreateCertificate createCertificate) {
+        Certificate certificate = certificateFromCreateCertificate.mapFrom(createCertificate);
         if (certificateValidator.isValid(certificate)) {
             if (certificate.getCreateDate() == null) {
                 certificate.setCreateDate(LocalDateTime.now());
@@ -59,28 +66,27 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
 
     @Override
     @Transactional
-    public void updateEntity(long id, CreateCertificate createCertificate) {
+    public void updateEntity(long id, CertificateDto certificateDto) {
         Optional<Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
-            createCertificate.setId(id);
-            if (createCertificate.getCertificateName() == null)
-                createCertificate.setCertificateName(c.get().getCertificateName());
-            if (createCertificate.getDescription() == null)
-                createCertificate.setDescription(c.get().getDescription());
-            if (createCertificate.getPrice() <= 0)
-                createCertificate.setPrice(c.get().getPrice());
-            if (createCertificate.getDuration() <= 0) {
-                createCertificate.setDuration(c.get().getDuration());
-                createCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(c.get().getDuration()));
+            certificateDto.setIg(id);
+            if (certificateDto.getCertificateName() == null)
+                certificateDto.setCertificateName(c.get().getCertificateName());
+            if (certificateDto.getDescription() == null)
+                certificateDto.setDescription(c.get().getDescription());
+            if (certificateDto.getPrice() <= 0)
+                certificateDto.setPrice(c.get().getPrice());
+            if (certificateDto.getDuration() <= 0) {
+                certificateDto.setDuration(c.get().getDuration());
+                certificateDto.setLastUpdateDate(LocalDateTime.now().plusDays(c.get().getDuration()));
             } else {
-                createCertificate.setLastUpdateDate(LocalDateTime.now().plusDays(createCertificate.getDuration()));
+                certificateDto.setLastUpdateDate(LocalDateTime.now().plusDays(certificateDto.getDuration()));
             }
-            if (createCertificate.getCreateDate() == null)
-                createCertificate.setCreateDate(c.get().getCreateDate());
-            if (createCertificate.getLastUpdateDate() == null)
-                createCertificate.setLastUpdateDate(c.get().getLastUpdateDate());
-            Certificate certificate = certificateMapper.mapFrom(createCertificate);
-
+            if (certificateDto.getCreateDate() == null)
+                certificateDto.setCreateDate(c.get().getCreateDate());
+            if (certificateDto.getLastUpdateDate() == null)
+                certificateDto.setLastUpdateDate(c.get().getLastUpdateDate());
+            Certificate certificate = certificateFromCertificateDto.mapFrom(certificateDto);
 
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
@@ -95,7 +101,7 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
 
     @Override
     @Transactional
-    public Optional<ReadCertificate> getEntity(long id) {
+    public Optional<ReadCertificate> findById(long id) {
         Optional<Certificate> c = repository.getEntityById(id);
         if (c.isEmpty()) {
             throw new NoSuchEntityException(languageMassage.getMessage("message.certificate.with.id"));
@@ -116,7 +122,7 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
 
     @Override
     @Transactional
-    public int countAllCertificates() {
+    public int countAll() {
         return repository.countAllCertificates();
     }
 
@@ -137,17 +143,17 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
         }
     }
 
-    @Transactional
-    public List<ReadCertificate> getCertificatesByTag(String tagName) {
-        List<Certificate> list;
-        Optional<Tag> tag = tagRepository.getTagByName(tagName);
-        if (tag.isEmpty()) {
-            throw new NoSuchEntityException(languageMassage.getMessage("message.be.empty"));
-        } else {
-            list = repository.getCertificatesByName(tagName);
-        }
-        return readMapper.buildListModelCertificates(list);
-    }
+//    @Transactional
+//    public List<ReadCertificate> getCertificatesByTag(String tagName) {
+//        List<Certificate> list;
+//        Optional<Tag> tag = tagRepository.getTagByName(tagName);
+//        if (tag.isEmpty()) {
+//            throw new NoSuchEntityException(languageMassage.getMessage("message.be.empty"));
+//        } else {
+//            list = repository.getCertificatesByName(tagName);
+//        }
+//        return readMapper.buildListModelCertificates(list);
+//    }
 
     @Transactional
     public List<ReadCertificate> getCertificateByName(String name) {
@@ -159,13 +165,23 @@ public class CertificateServiceImpl implements CertificateService<ReadCertificat
     }
 
     @Transactional
-    public List<ReadCertificate> getCertificatesByTags(String tagName1, String tagName2) {
-        Optional<Tag> tag1 = tagRepository.getTagByName(tagName1);
-        Optional<Tag> tag2 = tagRepository.getTagByName(tagName2);
-        if (tag1.isEmpty() || tag2.isEmpty()) {
-            throw new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
+    public List<ReadCertificate> getCertificatesByTags(List<String> tagNames) {
+        List<String>list = new ArrayList<>();
+        for (String name : tagNames){
+            Optional<Tag> tag = tagRepository.getTagByName(name);
+            if(tag.isEmpty()){
+                throw new NoSuchEntityException(languageMassage.getMessage("message.with.name"));
+            }
+            list.add(tag.get().getTagName());
         }
+        return readMapper.buildListModelCertificates(repository.getCertificatesByTags(list));
+    }
 
-        return readMapper.buildListModelCertificates(repository.getCertificatesByTags(tag1.get().getId(), tag2.get().getId()));
+    @Transactional
+    public List<ReadCertificate> getCertificateByParameters(
+            String name,List<String> tagNames, String description, List<Double> price,
+           Integer page, Integer size){
+
+        return readMapper.buildListModelCertificates(repository.getCertificateByParameters(name,tagNames,description,price, page,size));
     }
 }

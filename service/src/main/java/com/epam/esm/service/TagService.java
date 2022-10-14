@@ -1,26 +1,36 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
 import com.epam.esm.Dto.tagDto.CreateTag;
+import com.epam.esm.Dto.tagDto.TagDto;
 import com.epam.esm.Dto.tagDto.ReadTag;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TagService<T> {
+public interface TagService extends EntityService<ReadTag, CreateTag,TagDto> {
 
-    List<T> getAllEntity(int limit, int offset);
+    @Override
+    List<ReadTag> getAllEntity(int limit, int offset);
 
+    List<TagDto> getAllTag(int limit, int offset);
+
+    @Override
     Optional<ReadTag> findById(long id);
 
+    @Override
     void deleteEntity(long id);
 
-    void saveEntity(Tag tag);
+    @Override
+    void saveEntity(CreateTag createTag);
 
-    void updateEntity(long id, T t);
+    @Override
+    void updateEntity(long id, TagDto tagDto);
 
-    List<CreateTag> listOnlyTags();
+    List<TagDto> listTags();
 
-    int countAllTags();
+    @Override
+    int countAll();
+
+    public ReadTag getPopularTagWithUser();
 
 }
