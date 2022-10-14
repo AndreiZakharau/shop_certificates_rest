@@ -10,6 +10,7 @@ import com.epam.esm.mapper.impl.tagMapper.TransitionReadTagFromTag;
 import com.epam.esm.mapper.impl.tagMapper.TransitionTagDtoFromTag;
 import com.epam.esm.mapper.impl.tagMapper.TransitionTagFromCreateTag;
 import com.epam.esm.mapper.impl.tagMapper.TransitionTagFromTagDto;
+import com.epam.esm.repository.impl.CertificateRepositoryImpl;
 import com.epam.esm.repository.impl.TagRepositoryImpl;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.validator.impl.TagsValidator;
@@ -29,6 +30,7 @@ public class TagServiceImpl implements TagService {
     private final TagRepositoryImpl repository;
     private final TagsValidator tagsValidator;
     private final CertificateServiceImpl certificateServiceImpl;
+    private final CertificateRepositoryImpl certificateRepository;
     private final TransitionReadTagFromTag readMapper;
     private final TransitionTagDtoFromTag tagDtoFromTag;
     private final LanguageMassage languageMassage;
@@ -60,7 +62,7 @@ public class TagServiceImpl implements TagService {
         } else {
             throw new IncorrectDataException("message.not.valid");
         }
-        certificateServiceImpl.saveCertificatesTag();
+        certificateServiceImpl.autoSaveCertificatesTag();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class TagServiceImpl implements TagService {
             throw new NoSuchEntityException(languageMassage.getMessage("message.tag.with.id"));
 
         }
-        certificateServiceImpl.saveCertificatesTag();
+        certificateServiceImpl.autoSaveCertificatesTag();
     }
 
 
@@ -122,4 +124,9 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Override
+    @Transactional
+    public void addTagToCertificate(long tId, long cId) {
+        certificateRepository.saveCertificatesTag(cId, tId);
+    }
 }

@@ -139,11 +139,22 @@ public class TagController {
      * with the maximum sum of all order
      */
     @GetMapping("/popular")
+    @ResponseStatus(HttpStatus.OK)
     public ReadTag getPopularTagWithUser() {
         ReadTag tag = service.getPopularTagWithUser();
         allTagsLink(tag);
         return  tag;
     }
+
+    @PostMapping("/{tId}/certificates/{cId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String addTagToCertificate(@PathVariable long tId,
+                                      @PathVariable long cId ) {
+        service.addTagToCertificate(tId,cId);
+        return "Tag added to certificate.";
+    }
+
+
 
     private void allTagsLink(ReadTag model) {
         model.add(linkTo(methodOn(TagController.class)

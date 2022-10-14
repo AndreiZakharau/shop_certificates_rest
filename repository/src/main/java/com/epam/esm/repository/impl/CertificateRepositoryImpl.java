@@ -70,6 +70,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         session.save(certificate);
     }
 
+    @Override
     public void deleteEntity(Certificate certificate) {
         Session session = manager.getCurrentSession();
         session.delete(certificate);
@@ -83,6 +84,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     }
 
 
+    @Override
     public void saveCertificatesTag(long c, long t) {
         Session session = manager.getCurrentSession();
         session.createNativeQuery("INSERT INTO certificates_tag VALUES(?, ?)")
@@ -92,6 +94,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     }
 
 
+    @Override
     public List<Certificate> getCertificateAndTag(Certificate c, Tag t) {
         Session session = manager.getCurrentSession();
         /*
@@ -111,6 +114,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     }
 
 
+    @Override
     public List<Certificate> getCertificatesByName(String name) {
         Session session = manager.getCurrentSession();
 //        return session.createQuery("select c from Certificate c  where c.certificateName like concat('%',:name,'%')", Certificate.class)
@@ -123,6 +127,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         return session.createQuery(cq).getResultList();
     }
 
+    @Override
     public int countAllCertificates() {
         Session session = manager.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -132,6 +137,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         return session.createQuery(criteriaQuery).uniqueResult().intValue();
     }
 
+    @Override
     public List<Certificate> getCertificateByParameters(String name, List<String> tagNames, String description,
                                                         List<Double> prices, Integer page, Integer size) {
         Session session = manager.getCurrentSession();
@@ -166,6 +172,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 .getResultList();
     }
 
+    @Override
     public List<Certificate> getCertificatesByTags(List<String> tagNames) {
         Session session = manager.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();

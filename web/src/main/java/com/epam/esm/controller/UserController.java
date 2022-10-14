@@ -1,10 +1,12 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.Dto.orderDto.CreateOrder;
+import com.epam.esm.Dto.orderDto.ReadOrder;
 import com.epam.esm.Dto.userDto.CreateUser;
 import com.epam.esm.Dto.userDto.ReadUser;
 import com.epam.esm.Dto.userDto.UserDto;
 import com.epam.esm.pagination.Pagination;
+import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    private final OrderServiceImpl orderService;
 
     /**
      * Created new user
@@ -126,14 +130,55 @@ public class UserController {
         return userModel;
     }
 
+    @GetMapping("/orders")
+    public CollectionModel<ReadOrder> getOrders(@RequestParam("page") int page,
+                                                @RequestParam("size") int size){
+        int offset = Pagination.offset(page, size);
+        int totalRecords = orderService.countAll();
+        int pages = Pagination.findPages(totalRecords, size);
+        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
+        Link prevLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findPrevPage(page), size))
+                .withRel("prev");
+        Link nextLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
+                .withRel("next");
+        List<ReadOrder> models = orderService.getAllEntity(size, offset);
+        return CollectionModel.of(models, prevLink, nextLink);
+    }
+
     /**
      * @param userId        the userID
      * @param certificateId the CertificateId
      * @return OrderModel
      */
-    @PostMapping("/purchase") //todo
+    @PostMapping("/orders")
     public CreateOrder purchaseCertificate(@RequestParam long userId, @RequestParam long certificateId) {
         return userService.purchaseCertificate(userId, certificateId);
+    }
+
+    /**
+     * Get order by id
+     *
+     * @param id the id
+     * @return readOrder (order Dto)
+     */
+    @GetMapping("/orders/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<ReadOrder> getOrderById(@PathVariable long id) {
+        Optional<ReadOrder> order = Optional.ofNullable(orderService.findById(id)).get();
+        return order;
+    }
+
+    /**
+     * delete orderDto by id
+     *
+     * @param id the id
+     * @return string response
+     */
+    @DeleteMapping("/orders/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleteOrder(@PathVariable long id) {
+        orderService.deleteEntity(id);
+        return "Order with ID = " + id + ", was deleted.";
     }
 
     private void allUsersLink(ReadUser userModel) {

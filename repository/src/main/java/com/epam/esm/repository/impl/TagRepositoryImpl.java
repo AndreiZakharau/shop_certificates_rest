@@ -1,12 +1,16 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.Tag_;
 import com.epam.esm.repository.TagRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +26,15 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public List<Tag> getAllEntity(int limit, int offset) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag t", Tag.class)
+//        return session.createQuery("select t from Tag t", Tag.class)
+//                .setMaxResults(limit)
+//                .setFirstResult(offset)
+//                .getResultList();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> cq = cb.createQuery(Tag.class);
+        Root<Tag> tag = cq.from(Tag.class);
+        cq.select(tag);
+        return session.createQuery(cq)
                 .setMaxResults(limit)
                 .setFirstResult(offset)
                 .getResultList();
@@ -38,9 +50,15 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public Optional<Tag> getEntityById(long id) {
         Session session = manager.getCurrentSession();
-        return session
-                .createQuery("select t from Tag t where t.id = :id", Tag.class)
-                .setParameter("id", id).uniqueResultOptional();
+//        return session
+//                .createQuery("select t from Tag t where t.id = :id", Tag.class)
+//                .setParameter("id", id).uniqueResultOptional();
+//                  .getResultList();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> cq = cb.createQuery(Tag.class);
+        Root<Tag> tag = cq.from(Tag.class);
+        cq.select(tag).where(cb.equal(tag.get(Tag_.ID),id));
+        return session.createQuery(cq).uniqueResultOptional();
     }
 
     @Override
@@ -61,21 +79,40 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
     @Override
     public List<Tag> getTags() {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag  t", Tag.class).getResultList();
+//        return session.createQuery("select t from Tag  t", Tag.class).getResultList();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> cq = cb.createQuery(Tag.class);
+        Root<Tag> tag = cq.from(Tag.class);
+        cq.select(tag);
+        return session.createQuery(cq).getResultList();
     }
 
+    @Override
     public int countAllTags() {
         Session session = manager.getCurrentSession();
-        return (int) session.createQuery("select t from Tag t",Tag.class).stream().count();
+//        return (int) session.createQuery("select t from Tag t",Tag.class).stream().count();
 
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Tag> root = criteriaQuery.from(Tag.class);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        return session.createQuery(criteriaQuery).uniqueResult().intValue();
     }
 
+    @Override
     public Optional<Tag> getTagByName(String tagName) {
         Session session = manager.getCurrentSession();
-        return session.createQuery("select t from Tag  t where tagName =:tagName", Tag.class)
-                .setParameter("tagName", tagName).uniqueResultOptional();
+//        return session.createQuery("select t from Tag  t where tagName =:tagName", Tag.class)
+//                .setParameter("tagName", tagName).uniqueResultOptional();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> cq = cb.createQuery(Tag.class);
+        Root<Tag> tag = cq.from(Tag.class);
+        cq.select(tag).where(cb.equal(tag.get(Tag_.TAG_NAME),tagName));
+        return session.createQuery(cq).uniqueResultOptional();
     }
 
+    @Override
     public Tag getPopularTagWithUser() {
         Session session = manager.getCurrentSession();
         return session.createNativeQuery(
@@ -92,6 +129,7 @@ public class TagRepositoryImpl implements TagRepository, Serializable {
                         "where users_sum.id = man.id) as resault on resault.u_id = o.user_id " +
                         "group by t.tag_name) as count_tags on count_tags.tag = tags.tag_name " +
                         "having max(count_tags.count_tag)", Tag.class).uniqueResult();
+
     }
 
 }

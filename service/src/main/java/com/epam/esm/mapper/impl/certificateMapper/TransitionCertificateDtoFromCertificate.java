@@ -28,7 +28,7 @@ public class TransitionCertificateDtoFromCertificate implements Mapper<Certifica
         List<CertificateDto> list = new ArrayList<>();
         for(Certificate c : certificates){
             CertificateDto cd = CertificateDto.builder()
-                    .ig(c.getId())
+                    .id(c.getId())
                     .certificateName(c.getCertificateName())
                     .description(c.getDescription())
                     .price(c.getPrice())

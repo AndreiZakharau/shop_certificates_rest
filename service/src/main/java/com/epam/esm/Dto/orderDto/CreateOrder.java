@@ -1,12 +1,15 @@
 package com.epam.esm.Dto.orderDto;
 
-import com.epam.esm.Dto.certificateDto.CreateCertificate;
-import com.epam.esm.Dto.userDto.CreateUser;
-import lombok.*;
+import com.epam.esm.Dto.certificateDto.CertificateDto;
+import com.epam.esm.Dto.userDto.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateOrder extends RepresentationModel<CreateOrder> {
 
-    CreateUser user;
-    List<CreateCertificate> certificate;
+    UserDto user;
+    CertificateDto certificate;
     private double cost;
     public LocalDateTime datePurchase;
 }

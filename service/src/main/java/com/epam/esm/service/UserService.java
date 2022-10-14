@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.Dto.orderDto.CreateOrder;
 import com.epam.esm.Dto.userDto.CreateUser;
 import com.epam.esm.Dto.userDto.ReadUser;
 import com.epam.esm.Dto.userDto.UserDto;
@@ -28,4 +29,6 @@ public interface UserService extends EntityService<ReadUser, CreateUser, UserDto
     int countAll();
 
     Optional<ReadUser> getUserByName(String name);
+
+    CreateOrder purchaseCertificate(long userId, long certificateId);
 }

@@ -27,4 +27,9 @@ public interface CertificateService extends EntityService<ReadCertificate, Creat
     @Override
     int countAll();
 
+    List<ReadCertificate> getCertificatesByTags(List<String> tagNames);
+
+    List<ReadCertificate> getCertificateByParameters(
+            String name,List<String> tagNames, String description, List<Double> price,
+            Integer page, Integer size);
 }

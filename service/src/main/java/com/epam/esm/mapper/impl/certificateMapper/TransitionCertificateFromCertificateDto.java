@@ -13,7 +13,7 @@ public class TransitionCertificateFromCertificateDto implements Mapper<Certifica
     @Override
     public Certificate mapFrom(CertificateDto object) {
         return Certificate.builder()
-                .id(object.getIg())
+                .id(object.getId())
                 .certificateName(object.getCertificateName())
                 .description(object.getDescription())
                 .duration(object.getDuration())
@@ -27,7 +27,7 @@ public class TransitionCertificateFromCertificateDto implements Mapper<Certifica
         List<Certificate> list = new ArrayList<>();
         for (CertificateDto certificateDto : certificates){
             Certificate certificate = Certificate.builder()
-                    .id(certificateDto.getIg())
+                    .id(certificateDto.getId())
                     .certificateName(certificateDto.getCertificateName())
                     .description(certificateDto.getDescription())
                     .duration(certificateDto.getDuration())

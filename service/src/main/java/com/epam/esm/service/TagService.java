@@ -31,6 +31,8 @@ public interface TagService extends EntityService<ReadTag, CreateTag,TagDto> {
     @Override
     int countAll();
 
-    public ReadTag getPopularTagWithUser();
+    ReadTag getPopularTagWithUser();
+
+    void addTagToCertificate(long tId, long cId);
 
 }

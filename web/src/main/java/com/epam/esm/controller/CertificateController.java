@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1.1/certificates")
-public class CertificateController {  //TODO remake
+public class CertificateController {
 
     private final CertificateServiceImpl service;
     private final TransitionCertificateFromCreateCertificate certificateMapper;
@@ -139,7 +139,7 @@ public class CertificateController {  //TODO remake
      * @param tagNames the list tagName
      * @return list ReadCertificate (certificate Dto)
      */
-    @GetMapping("/names")
+    @GetMapping("/tags")
     @ResponseStatus(HttpStatus.OK)
     public List<ReadCertificate> getCertificateByTag(@RequestParam(value = "tagName", required = false) List<String> tagNames) {
         return service.getCertificatesByTags(tagNames);

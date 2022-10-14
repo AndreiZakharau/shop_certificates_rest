@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.Dto.certificateDto.ReadCertificate;
 import com.epam.esm.Dto.orderDto.CreateOrder;
 import com.epam.esm.Dto.userDto.CreateUser;
 import com.epam.esm.Dto.userDto.ReadUser;
@@ -9,15 +8,13 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.IncorrectDataException;
 import com.epam.esm.exception.NoSuchEntityException;
-import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromReadCertificate;
-import com.epam.esm.mapper.impl.certificateMapper.TransitionCreateCertificateFromCertificate;
-import com.epam.esm.mapper.impl.certificateMapper.TransitionCreateCertificateInFromReadCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateDtoFromCertificate;
 import com.epam.esm.mapper.impl.orderMapper.TransitionOrderFromCreateOrder;
-import com.epam.esm.mapper.impl.userMapper.TransitionCreateUserFromUser;
 import com.epam.esm.mapper.impl.userMapper.TransitionReadUserFromUser;
+import com.epam.esm.mapper.impl.userMapper.TransitionUserDtoFromUser;
 import com.epam.esm.mapper.impl.userMapper.TransitionUserFromCreateUser;
-import com.epam.esm.mapper.impl.userMapper.TransitionUserFromReadUser;
 import com.epam.esm.mapper.impl.userMapper.TransitionUserFromUserDto;
+import com.epam.esm.repository.impl.CertificateRepositoryImpl;
 import com.epam.esm.repository.impl.OrderRepositoryImpl;
 import com.epam.esm.repository.impl.UserRepositoryImpl;
 import com.epam.esm.service.UserService;
@@ -27,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,17 +34,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepositoryImpl repository;
     private final OrderRepositoryImpl orderRepository;
-    private final CertificateServiceImpl certificateService;
+    private final CertificateRepositoryImpl certificateRepository;
 
     private final TransitionReadUserFromUser readMapper;
+    private final TransitionOrderFromCreateOrder createOrder;
     private final TransitionUserFromUserDto userFromUserDto;
-    private final TransitionCreateUserFromUser modelReadMapper;
+    private final TransitionUserDtoFromUser userDtoFromUser;
     private final TransitionUserFromCreateUser userFromCreateUser;
-    private final TransitionUserFromReadUser userFromReadUser;
-    private final TransitionOrderFromCreateOrder orderMapper;
-    private final TransitionCertificateFromReadCertificate certificateMapper;
-    private final TransitionCreateCertificateFromCertificate onlyCertificateReadMapper;
-    private final TransitionCreateCertificateInFromReadCertificate onlyCertificateMapper;
+    private final TransitionCertificateDtoFromCertificate certificateDtoFromCertificate;
 
     private final LanguageMassage languageMassage;
 
@@ -122,24 +115,21 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Transactional  // TODO logic save order
+    @Transactional
+    @Override
     public CreateOrder purchaseCertificate(long userId, long certificateId) {
 
-        Optional<ReadCertificate> certificate = certificateService.findById(certificateId);
-//        certificateService.updateEntity(certificateId, (onlyCertificateMapper.mapFrom(certificate.get())));
-        Optional<User> user = Optional.ofNullable(repository.getEntityById(userId)).orElseThrow();
-        List<Certificate> list = new ArrayList<>();
-        Optional<ReadCertificate> updateCertificate = certificateService.findById(certificateId);
-        list.add(certificateMapper.mapFrom(updateCertificate.get()));
-        CreateOrder model = CreateOrder.builder()
-                .user(user.map(modelReadMapper::mapFrom).orElseThrow())
-                .certificate(onlyCertificateReadMapper.buildListCertificates(list)).build();
-        model.setUser((user.map(modelReadMapper::mapFrom).orElseThrow()));
-        model.setCertificate(onlyCertificateReadMapper.buildListCertificates(list));
-        model.setCost(updateCertificate.get().getPrice());
-        model.setDatePurchase(LocalDateTime.now());
-        orderRepository.saveOrder(orderMapper.mapFrom(model));
+        Optional<Certificate> certificate = certificateRepository.getEntityById(certificateId);
+        Optional<User> user = repository.getEntityById(userId);
+        CreateOrder order = new CreateOrder();
+        if(certificate.isPresent()&&user.isPresent()){
+            order.setUser(userDtoFromUser.mapFrom(user.orElseThrow()));
+            order.setCertificate(certificateDtoFromCertificate.mapFrom(certificate.orElseThrow()));
+            order.setCost(certificate.get().getPrice());
+            order.setDatePurchase(LocalDateTime.now());
+            orderRepository.addEntity(createOrder.mapFrom(order));
+        }
 
-        return model;
+        return order;
     }
 }

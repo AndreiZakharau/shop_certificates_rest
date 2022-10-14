@@ -13,4 +13,6 @@ public interface EntityRepository<T>{
 
      void updateEntity(T t);
 
+//     void deleteEntity(T t);
+
 }

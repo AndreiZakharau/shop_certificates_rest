@@ -17,5 +17,10 @@ public interface UserRepository extends EntityRepository<User> {
 
     void deleteEntity(long id);
 
+    @Override
+    void updateEntity(User user);
+
     Optional<User> getUserByName(String name);
+
+    int countAllUsers();
 }

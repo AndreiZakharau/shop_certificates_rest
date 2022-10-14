@@ -22,4 +22,10 @@ public interface TagRepository extends EntityRepository<Tag> {
 
     List<Tag> getTags();
 
+    int countAllTags();
+
+    Optional<Tag> getTagByName(String string);
+
+    Tag getPopularTagWithUser();
+
 }

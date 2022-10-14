@@ -58,7 +58,7 @@ public class CertificateServiceImpl implements CertificateService {
                 certificate.setLastUpdateDate(certificate.getCreateDate().plusDays(certificate.getDuration()));
             }
             repository.addEntity(certificate);
-            saveCertificatesTag();
+            autoSaveCertificatesTag();
         } else {
             throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
         }
@@ -69,7 +69,7 @@ public class CertificateServiceImpl implements CertificateService {
     public void updateEntity(long id, CertificateDto certificateDto) {
         Optional<Certificate> c = repository.getEntityById(id);
         if (c.isPresent()) {
-            certificateDto.setIg(id);
+            certificateDto.setId(id);
             if (certificateDto.getCertificateName() == null)
                 certificateDto.setCertificateName(c.get().getCertificateName());
             if (certificateDto.getDescription() == null)
@@ -90,7 +90,7 @@ public class CertificateServiceImpl implements CertificateService {
 
             if (certificateValidator.isValid(certificate)) {
                 repository.updateEntity(certificate);
-                saveCertificatesTag();
+                autoSaveCertificatesTag();
             } else {
                 throw new IncorrectDataException(languageMassage.getMessage("message.not.valid"));
             }
@@ -128,7 +128,7 @@ public class CertificateServiceImpl implements CertificateService {
 
 
     @Transactional
-    public void saveCertificatesTag() {
+    public void autoSaveCertificatesTag() {
 
         List<Tag> tagList = tagRepository.getTags();
         for (Tag t : tagList) {
@@ -165,6 +165,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Transactional
+    @Override
     public List<ReadCertificate> getCertificatesByTags(List<String> tagNames) {
         List<String>list = new ArrayList<>();
         for (String name : tagNames){
@@ -178,6 +179,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Transactional
+    @Override
     public List<ReadCertificate> getCertificateByParameters(
             String name,List<String> tagNames, String description, List<Double> price,
            Integer page, Integer size){

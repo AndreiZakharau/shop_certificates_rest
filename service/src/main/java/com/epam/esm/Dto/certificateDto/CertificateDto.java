@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CertificateDto extends RepresentationModel<CertificateDto> {
 
-    private long ig;
+    private long id;
     private String certificateName;
     private String description;
     private double price;
