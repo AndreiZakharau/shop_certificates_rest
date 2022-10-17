@@ -5,6 +5,7 @@ import com.epam.esm.Dto.certificateDto.CreateCertificate;
 import com.epam.esm.Dto.certificateDto.ReadCertificate;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.model.SortParamsContext;
 import com.epam.esm.exception.IncorrectDataException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromCertificateDto;
@@ -181,9 +182,16 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional
     @Override
     public List<ReadCertificate> getCertificateByParameters(
-            String name,List<String> tagNames, String description, List<Double> price,
-           Integer page, Integer size){
+            String name, List<String> tagNames, String description, List<Double> price,
+            List<String> sortColumns, List<String> orderTypes, int offset, int size){
+        SortParamsContext sortParameters = null;
+        if (sortColumns != null) {
+            sortParameters = new SortParamsContext(sortColumns, orderTypes);
+            if(!certificateValidator.columnsValid(sortParameters)) {
+                throw new NoSuchEntityException("bad parameters");
+            }
+        }
 
-        return readMapper.buildListModelCertificates(repository.getCertificateByParameters(name,tagNames,description,price, page,size));
+        return readMapper.buildListModelCertificates(repository.getCertificateByParameters(name,tagNames,description,price,sortColumns, orderTypes, offset,size));
     }
 }

@@ -3,13 +3,11 @@ package com.epam.esm.controller;
 import com.epam.esm.Dto.certificateDto.CertificateDto;
 import com.epam.esm.Dto.certificateDto.CreateCertificate;
 import com.epam.esm.Dto.certificateDto.ReadCertificate;
-import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateFromCreateCertificate;
+import com.epam.esm.link.linkImpl.AddCertificateLink;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.service.impl.CertificateServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CertificateController {
 
     private final CertificateServiceImpl service;
-    private final TransitionCertificateFromCreateCertificate certificateMapper;
+    private final AddCertificateLink certificateLink;
 
     /**
      * created certificate
@@ -48,6 +44,7 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateCertificate addCertificate(@RequestBody CreateCertificate certificate) {
         service.saveEntity(certificate);
+        certificateLink.addCreateLink(certificate);
         return certificate;
     }
 
@@ -59,18 +56,25 @@ public class CertificateController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<ReadCertificate> listAllCertificates(@RequestParam(value = "page", required = false) Integer page,
-                                                                @RequestParam(value = "size", required = false) Integer size) {
+    public CollectionModel<ReadCertificate> listAllCertificates(@RequestParam(value = "page",defaultValue = "1", required = false) Integer page,
+                                                                @RequestParam(value = "size",defaultValue = "10", required = false) Integer size) {
         int offset = Pagination.offset(page, size);
-        int totalRecords = service.countAll();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(CertificateController.class).listAllCertificates(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(CertificateController.class).listAllCertificates(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
-        List<ReadCertificate> models = service.getAllEntity(size, offset);
-        return CollectionModel.of(models, prevLink, nextLink);
+        ReadCertificate readCertificate = new ReadCertificate();
+        List<ReadCertificate> list = service.getAllEntity(size, offset);
+        certificateLink.pageLink(page, size, readCertificate);
+        return CollectionModel.of(list.stream()
+                .peek(certificateLink::addLinks)
+                .collect(Collectors.toList()), readCertificate.getLinks());
+    }
+
+    /**
+     * @param name the name
+     * @return certificate by name or part of name
+     */
+    @GetMapping("/{name}/name")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReadCertificate> getCertificateByName(@PathVariable String name) {
+        return service.getCertificateByName(name);
     }
 
     /**
@@ -83,11 +87,7 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public Optional<ReadCertificate> getCertificateById(@PathVariable("id") Long id) {
         Optional<ReadCertificate> model = Optional.ofNullable(service.findById(id)).get();
-        model.get().add(linkTo(methodOn(CertificateController.class)
-                .listAllCertificates(1, 5))
-                .withRel("certificateDto")
-                .withType(HttpMethod.GET.name()));
-        ;
+        certificateLink.addLinks(model.get());
         return model;
     }
 
@@ -104,6 +104,7 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public CertificateDto updateCertificate(@RequestBody CertificateDto certificate, @PathVariable long id) {
         service.updateEntity(id, certificate);
+        certificateLink.addLinks(certificate);
         return certificate;
     }
 
@@ -115,24 +116,42 @@ public class CertificateController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteCertificate(@PathVariable long id) {
+    public void deleteCertificate(@PathVariable long id) {
         service.deleteEntity(id);
-        return "Certificate with ID = " + id + " was deleted.";
+
     }
 
 
+    /**
+     * @param name the certificate name
+     * @param tagNames the certificate tagNames
+     * @param description the certificate description
+     * @param price the certificate price
+     * @param sortColumns the certificate column
+     * @param orderTypes the type (asc or desc)
+     * @param page the page
+     * @param size the size
+     * @return list certificates
+     */
     @GetMapping("/sort")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReadCertificate> getCertificateByParameters(
+    public CollectionModel<ReadCertificate> getCertificateByParameters(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "tagName", required = false) List<String> tagNames,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "price", required = false) List<Double> price,
-            @RequestParam(value = "page", defaultValue ="1", required = false) Integer page,
-            @RequestParam(value = "size", defaultValue ="10", required = false) Integer size
+            @RequestParam(value = "sort", required = false) List<String> sortColumns,
+            @RequestParam(value = "order", required = false) List<String> orderTypes,
+            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size
     ) {
-
-        return service.getCertificateByParameters(name, tagNames,description,price,page,size);
+        int offset = Pagination.offset(page, size);
+        ReadCertificate readCertificate =new ReadCertificate();
+        List<ReadCertificate> list = service.getCertificateByParameters(name, tagNames, description, price,sortColumns,orderTypes, offset,size );
+        certificateLink.pageLink(page,size,readCertificate);
+        return CollectionModel.of(list.stream()
+                .peek(certificateLink::addLinks)
+                .collect(Collectors.toList()), readCertificate.getLinks());
     }
 
     /**
@@ -142,7 +161,10 @@ public class CertificateController {
     @GetMapping("/tags")
     @ResponseStatus(HttpStatus.OK)
     public List<ReadCertificate> getCertificateByTag(@RequestParam(value = "tagName", required = false) List<String> tagNames) {
-        return service.getCertificatesByTags(tagNames);
+        List<ReadCertificate> list = service.getCertificatesByTags(tagNames);
+        return list.stream()
+                .peek(certificateLink::addLinks)
+                .collect(Collectors.toList());
     }
 
 

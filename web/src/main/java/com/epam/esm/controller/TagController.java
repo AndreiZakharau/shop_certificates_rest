@@ -1,14 +1,14 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.Dto.tagDto.CreateTag;
-import com.epam.esm.Dto.tagDto.TagDto;
 import com.epam.esm.Dto.tagDto.ReadTag;
+import com.epam.esm.Dto.tagDto.TagDto;
+import com.epam.esm.link.linkImpl.AddTagLink;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.service.impl.TagServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,17 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1.1/tags")
-
+@RequiredArgsConstructor
 public class TagController {
 
     @Autowired
     private TagServiceImpl service;
+
+    private final AddTagLink tagLink;
 
     /**
      * Created new tag
@@ -45,6 +45,7 @@ public class TagController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateTag addTag(@RequestBody CreateTag createTag) {
         service.saveEntity(createTag);
+//        tagLink.addLink(createTag);
         return createTag;
     }
 
@@ -59,16 +60,10 @@ public class TagController {
     public CollectionModel<TagDto> listTags(@RequestParam("page") int page,
                                             @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
-        int totalRecords = service.countAll();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(TagController.class).getAllTags(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(TagController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
+        TagDto tagDto = new TagDto();
         List<TagDto> tags = (service.getAllTag(size, offset));
-
-        return CollectionModel.of(tags, prevLink, nextLink);
+        tagLink.pageLink(page, size,tagDto);
+        return CollectionModel.of(tags.stream().peek(tagLink::addTadDtoLink).collect(Collectors.toList()), tagDto.getLinks());
     }
 
     /**
@@ -79,10 +74,10 @@ public class TagController {
      */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ReadTag> getTag(@PathVariable long id) {
+    public ReadTag getTag(@PathVariable long id) {
         Optional<ReadTag> model = service.findById(id);
-        allTagsLink(Optional.ofNullable(model).get().orElseThrow());
-        return model;
+        tagLink.addLinks(Optional.ofNullable(model).get().orElseThrow());
+        return model.get();
     }
 
     /**
@@ -96,6 +91,7 @@ public class TagController {
     @ResponseStatus(HttpStatus.OK)
     public TagDto updateTag(@RequestBody TagDto tag, @PathVariable long id) {
         service.updateEntity(id, tag);
+        tagLink.addTadDtoLink(tag);
         return tag;
     }
 
@@ -107,9 +103,8 @@ public class TagController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteTag(@PathVariable long id) {
+    public void deleteTag(@PathVariable long id) {
         service.deleteEntity(id);
-        return "Tag with ID = " + id + " was deleted.";
     }
 
     /**
@@ -122,16 +117,10 @@ public class TagController {
     public CollectionModel<ReadTag> getAllTags(@RequestParam("page") int page,
                                                @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
-        int totalRecords = service.countAll();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(TagController.class).getAllTags(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(TagController.class).getAllTags(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
-        List<ReadTag> models = service.getAllEntity(size, offset);
-
-        return CollectionModel.of(models, prevLink, nextLink);
+        ReadTag readTag = new ReadTag();
+        List<ReadTag> list = service.getAllEntity(size, offset);
+        tagLink.pageLink(page, size,readTag);
+        return CollectionModel.of(list.stream().peek(tagLink::addLinks).collect(Collectors.toList()), readTag.getLinks());
     }
 
     /**
@@ -142,7 +131,7 @@ public class TagController {
     @ResponseStatus(HttpStatus.OK)
     public ReadTag getPopularTagWithUser() {
         ReadTag tag = service.getPopularTagWithUser();
-        allTagsLink(tag);
+        tagLink.addLinks(tag);
         return  tag;
     }
 
@@ -154,23 +143,5 @@ public class TagController {
         return "Tag added to certificate.";
     }
 
-
-
-    private void allTagsLink(ReadTag model) {
-        model.add(linkTo(methodOn(TagController.class)
-                .getAllTags(1,5))
-                .withRel("tags")
-                .withType(HttpMethod.GET.name()));
-    }
-
-    private void deleteLinksForTags(List<ReadTag> models){
-        for (ReadTag readTag : models){
-            long tagId = readTag.getId();
-            readTag.add(linkTo(methodOn(TagController.class)
-                    .deleteTag(tagId))
-                    .withRel("delete_tag")
-                    .withType(HttpMethod.DELETE.name()));
-        }
-    }
 
 }

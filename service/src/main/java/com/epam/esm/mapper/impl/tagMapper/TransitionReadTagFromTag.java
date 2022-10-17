@@ -2,7 +2,7 @@ package com.epam.esm.mapper.impl.tagMapper;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.Mapper;
-import com.epam.esm.mapper.impl.certificateMapper.TransitionCreateCertificateFromCertificate;
+import com.epam.esm.mapper.impl.certificateMapper.TransitionCertificateDtoFromCertificate;
 import com.epam.esm.Dto.tagDto.ReadTag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,14 @@ import java.util.List;
 @Service
 public class TransitionReadTagFromTag implements Mapper<Tag, ReadTag> {
 
-    private final TransitionCreateCertificateFromCertificate certificateReadMapper;
+    private final TransitionCertificateDtoFromCertificate certificateDtoFromCertificate;
 
     @Override
     public ReadTag mapFrom(Tag object) {
         return new ReadTag(
                 object.getId(),
                 object.getTagName(),
-                certificateReadMapper.buildListCertificates(object.getCertificates())
+                certificateDtoFromCertificate.buildListCertificateDto(object.getCertificates())
         );
     }
 
@@ -31,7 +31,7 @@ public class TransitionReadTagFromTag implements Mapper<Tag, ReadTag> {
             ReadTag model = ReadTag.builder()
                     .id(tag.getId())
                     .tagName(tag.getTagName())
-                    .certificate(certificateReadMapper.buildListCertificates(tag.getCertificates()))
+                    .certificate(certificateDtoFromCertificate.buildListCertificateDto(tag.getCertificates()))
                     .build();
             readTags.add(model);
         }

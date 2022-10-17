@@ -1,7 +1,11 @@
 package com.epam.esm.Dto.tagDto;
 
-import com.epam.esm.Dto.certificateDto.CreateCertificate;
-import lombok.*;
+import com.epam.esm.Dto.certificateDto.CertificateDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
@@ -15,7 +19,7 @@ public class ReadTag extends RepresentationModel<ReadTag> {
 
     private long id;
     private String tagName;
-    List<CreateCertificate> certificate;
+    List<CertificateDto> certificate;
 }
 
 

@@ -13,11 +13,12 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Repository
@@ -108,7 +109,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Certificate> cq = cb.createQuery(Certificate.class);
         Root<Certificate> certificate = cq.from(Certificate.class);
-        Join<Certificate, Tag> tag = certificate.join("id", JoinType.INNER);
+        Join<Certificate, Tag> tag = certificate.join(Certificate_.TAGS);
         cq.select(certificate).where(cb.equal(certificate.get(Certificate_.ID), c.getId()), (cb.equal(tag.get(Tag_.ID), t.getId())));
         return session.createQuery(cq).getResultList();
     }
@@ -117,6 +118,9 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     @Override
     public List<Certificate> getCertificatesByName(String name) {
         Session session = manager.getCurrentSession();
+        /*
+         * query using hql
+         */
 //        return session.createQuery("select c from Certificate c  where c.certificateName like concat('%',:name,'%')", Certificate.class)
 //                .setParameter("name", name)
 //                .list();
@@ -139,7 +143,8 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Override
     public List<Certificate> getCertificateByParameters(String name, List<String> tagNames, String description,
-                                                        List<Double> prices, Integer page, Integer size) {
+                                                        List<Double> prices, List<String> sortColumns, List<String> orderTypes, int offset, int size) {
+        List<String> typesList = Arrays.asList("ASC", "DESC");
         Session session = manager.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Certificate> cq = cb.createQuery(Certificate.class);
@@ -149,8 +154,8 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         if (name != null) {
             predicates.add(cb.like(certificate.get(Certificate_.CERTIFICATE_NAME), "%" + name + "%"));
         }
-        for (String tagName : tagNames) {
-            if (name != null) {
+        if (tagNames.size() != 0) {
+            for (String tagName : tagNames) {
                 predicates.add(cb.equal(tag.get(Tag_.TAG_NAME), tagName));
             }
         }
@@ -162,13 +167,20 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                     .max().orElseThrow();
             Double minPrice = prices.stream().mapToDouble(price -> price)
                     .min().orElseThrow();
-            predicates.add(cb.between(certificate.get(Certificate_.PRICE),minPrice,maxPrice));
+            predicates.add(cb.between(certificate.get(Certificate_.PRICE), minPrice, maxPrice));
+        }
+        cq.select(certificate).where(predicates.toArray(Predicate[]::new));
+        for (String c : sortColumns) {
+            if (orderTypes.stream().anyMatch(order -> typesList.contains(order.toUpperCase(Locale.ROOT)))) {
+                cq.groupBy(certificate.get(c)).orderBy(cb.desc(certificate.get(c)));
+            } else {
+                cq.groupBy(certificate.get(c)).orderBy(cb.asc(certificate.get(c)));
+            }
         }
 
-        cq.select(certificate).where(predicates.toArray(Predicate[]::new)).groupBy(certificate.get(Certificate_.CERTIFICATE_NAME));
         return session.createQuery(cq)
                 .setMaxResults(size)
-                .setFirstResult(size * (page-1))
+                .setFirstResult(offset)
                 .getResultList();
     }
 
@@ -179,15 +191,17 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         CriteriaQuery<Certificate> cq = cb.createQuery(Certificate.class);
         Root<Certificate> certificate = cq.from(Certificate.class);
         Join<Certificate, Tag> tag = certificate.join(Certificate_.TAGS);
-        List<Predicate>predicates = new ArrayList<>();
-        if(tagNames.size()!=0) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (tagNames.size() != 0) {
             for (String tagName : tagNames) {
                 predicates.add(cb.equal(tag.get(Tag_.TAG_NAME), tagName));
             }
         }
+
         cq.select(certificate).where(cb.or(predicates.toArray(Predicate[]::new))).groupBy(certificate.get(Certificate_.CERTIFICATE_NAME));
         return session.createQuery(cq).getResultList();
     }
+
 
 }
 

@@ -5,14 +5,14 @@ import com.epam.esm.Dto.orderDto.ReadOrder;
 import com.epam.esm.Dto.userDto.CreateUser;
 import com.epam.esm.Dto.userDto.ReadUser;
 import com.epam.esm.Dto.userDto.UserDto;
+import com.epam.esm.link.linkImpl.AddOrderLink;
+import com.epam.esm.link.linkImpl.AddUserLink;
 import com.epam.esm.pagination.Pagination;
 import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1.1/users")
@@ -40,6 +38,8 @@ public class UserController {
     private UserServiceImpl userService;
 
     private final OrderServiceImpl orderService;
+    private final AddUserLink userLink;
+    private final AddOrderLink orderLink;
 
     /**
      * Created new user
@@ -64,15 +64,12 @@ public class UserController {
     public CollectionModel<ReadUser> listAllUsers(@RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
         int offset = Pagination.offset(page, size);
-        int totalRecords = userService.countAll();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
+        ReadUser readUser = new ReadUser();
         List<ReadUser> models = userService.getAllEntity(size, offset);
-        return CollectionModel.of(models, prevLink, nextLink);
+        userLink.pageLink(page,size,readUser);
+        return CollectionModel.of(models.stream().peek(userLink::addLinks)
+                .collect(Collectors.toList()),
+                readUser.getLinks());
     }
 
     /**
@@ -85,7 +82,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Optional<ReadUser> getUserById(@PathVariable long id) {
         Optional<ReadUser> userModel = Optional.ofNullable(userService.findById(id)).get();
-        allUsersLink(userModel.get());
+        userLink.addLinks(userModel.get());
         return userModel;
     }
 
@@ -107,42 +104,35 @@ public class UserController {
      * delete userDto by id
      *
      * @param id the id
-     * @return string response
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteUser(@PathVariable long id) {
+    public void deleteUser(@PathVariable long id) {
         userService.deleteEntity(id);
-        return "User with ID = " + id + ", was deleted.";
     }
 
     /**
-     * get userDto by name
+     * get readUser by name
      *
      * @param name the name
-     * @return userDto
+     * @return readUser
      */
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<ReadUser> getUserByName(@PathVariable String name) {
         Optional<ReadUser> userModel =userService.getUserByName(name);
-        allUsersLink(userModel.get());
+        userLink.addLinks(userModel.get());
         return userModel;
     }
 
     @GetMapping("/orders")
-    public CollectionModel<ReadOrder> getOrders(@RequestParam("page") int page,
-                                                @RequestParam("size") int size){
+    public CollectionModel<ReadOrder> getOrders(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                @RequestParam(value = "size",  defaultValue = "1", required = false) int size){
         int offset = Pagination.offset(page, size);
-        int totalRecords = orderService.countAll();
-        int pages = Pagination.findPages(totalRecords, size);
-        int lastPage = Pagination.findLastPage(pages, size, totalRecords);
-        Link prevLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findPrevPage(page), size))
-                .withRel("prev");
-        Link nextLink = linkTo(methodOn(UserController.class).listAllUsers(Pagination.findNextPage(page, lastPage), size))
-                .withRel("next");
+        ReadOrder readOrder = new ReadOrder();
         List<ReadOrder> models = orderService.getAllEntity(size, offset);
-        return CollectionModel.of(models, prevLink, nextLink);
+        orderLink.pageLink(page,size,readOrder);
+        return CollectionModel.of(models.stream().peek(orderLink::addLinks).collect(Collectors.toList()), readOrder.getLinks());
     }
 
     /**
@@ -156,16 +146,21 @@ public class UserController {
     }
 
     /**
-     * Get order by id
+     * Get order by user id
      *
-     * @param id the id
+     * @param id the user id
      * @return readOrder (order Dto)
      */
-    @GetMapping("/orders/{id}")
+    @GetMapping("{id}/orders")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<ReadOrder> getOrderById(@PathVariable long id) {
-        Optional<ReadOrder> order = Optional.ofNullable(orderService.findById(id)).get();
-        return order;
+    public CollectionModel<ReadOrder> getOrderByUserId(@PathVariable long id,
+                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                            @RequestParam(value = "size",  defaultValue = "10", required = false) int size) {
+        int offset = Pagination.offset(page, size);
+        ReadOrder readOrder = new ReadOrder();
+        List<ReadOrder> orders = (orderService.getOrdersByUserId(id,size, offset));
+        orderLink.pageLink(page,size,readOrder);
+        return CollectionModel.of(orders.stream().peek(orderLink::addLinks).collect(Collectors.toList()),readOrder.getLinks());
     }
 
     /**
@@ -174,18 +169,11 @@ public class UserController {
      * @param id the id
      * @return string response
      */
-    @DeleteMapping("/orders/{id}")
+    @DeleteMapping("{}/orders/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteOrder(@PathVariable long id) {
+    public void deleteOrder(@PathVariable long id) {
         orderService.deleteEntity(id);
-        return "Order with ID = " + id + ", was deleted.";
     }
 
-    private void allUsersLink(ReadUser userModel) {
-        userModel.add(linkTo(methodOn(UserController.class)
-                .listAllUsers(1,5))
-                .withRel("usrs")
-                .withType(HttpMethod.GET.name()));
-    }
 
 }

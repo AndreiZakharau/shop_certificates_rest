@@ -30,6 +30,6 @@ public interface CertificateService extends EntityService<ReadCertificate, Creat
     List<ReadCertificate> getCertificatesByTags(List<String> tagNames);
 
     List<ReadCertificate> getCertificateByParameters(
-            String name,List<String> tagNames, String description, List<Double> price,
-            Integer page, Integer size);
+            String name, List<String> tagNames, String description, List<Double> price,
+            List<String> sortColumns, List<String> orderTypes, int offset, int size);
 }
