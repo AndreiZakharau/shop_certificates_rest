@@ -1,0 +1,5 @@
+rootProject.name = 'shop_certificates_rest'
+include 'service'
+include 'web'
+include 'repository'
+
